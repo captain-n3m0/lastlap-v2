@@ -199,8 +199,8 @@ export default function JourneyStrip() {
             <div className="lg:col-span-8">
               <h2
                 ref={titleRef}
-                className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight leading-[0.9]"
-                style={{ fontFamily: "'Anton', sans-serif" }}
+                className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-wide leading-[0.9]"
+                style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
               >
                 COLLECT.
                 <br />
@@ -211,10 +211,10 @@ export default function JourneyStrip() {
               </h2>
             </div>
             <div ref={subtitleRef} className="lg:col-span-4 pb-2">
-              <p className="text-sm sm:text-base font-mono text-white/70 leading-relaxed">
+              <p className="text-sm sm:text-base font-sans text-white/80 leading-relaxed font-normal">
                 Three interconnected pillars driving high-velocity competition and genuine digital sovereignty across the desert frontier.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-xs font-mono text-white/40 uppercase tracking-widest">
+              <div className="mt-4 flex items-center gap-2 text-xs font-mono text-white/50 uppercase tracking-widest">
                 <span>CIRCULATION: 2,525</span>
                 <span>•</span>
                 <span>DESERT PROTOCOL</span>
@@ -241,8 +241,8 @@ export default function JourneyStrip() {
                 <div>
                   <div className="flex items-center justify-between mb-8">
                     <span
-                      className="text-5xl sm:text-6xl font-black text-white/20 group-hover:text-white transition-colors tracking-tighter"
-                      style={{ fontFamily: "'Anton', sans-serif" }}
+                      className="text-5xl sm:text-6xl font-black text-white/20 group-hover:text-white transition-colors tracking-widest"
+                      style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.08em' }}
                     >
                       {step.num}
                     </span>
@@ -256,13 +256,13 @@ export default function JourneyStrip() {
                   </span>
 
                   <h3
-                    className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4 group-hover:translate-x-1 transition-transform"
-                    style={{ fontFamily: "'Anton', sans-serif" }}
+                    className="text-3xl sm:text-4xl font-black text-white uppercase tracking-wide mb-4 group-hover:translate-x-1 transition-transform"
+                    style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                   >
                     {step.title}
                   </h3>
 
-                  <p className="text-sm text-white/70 font-mono leading-relaxed mb-6">
+                  <p className="text-sm sm:text-base text-white/80 font-sans leading-relaxed mb-6 font-normal">
                     {step.description}
                   </p>
                 </div>

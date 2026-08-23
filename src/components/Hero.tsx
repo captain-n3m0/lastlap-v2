@@ -159,13 +159,14 @@ export default function Hero() {
     touchStartXRef.current = null;
   };
 
-  const getRole = (index: number): 'center' | 'left' | 'right' => {
+  const getRole = (index: number): 'center' | 'left' | 'right' | 'hidden' => {
     if (index === activeIndex) return 'center';
-    if (index === (activeIndex + 2) % 3) return 'left';
-    return 'right';
+    if (index === (activeIndex - 1 + heroRacers.length) % heroRacers.length) return 'left';
+    if (index === (activeIndex + 1) % heroRacers.length) return 'right';
+    return 'hidden';
   };
 
-  const getItemStyle = (role: 'center' | 'left' | 'right'): React.CSSProperties => {
+  const getItemStyle = (role: 'center' | 'left' | 'right' | 'hidden'): React.CSSProperties => {
     if (role === 'center') {
       return {
         position: 'absolute',
@@ -198,19 +199,35 @@ export default function Hero() {
         cursor: 'pointer',
       };
     }
+    if (role === 'right') {
+      return {
+        position: 'absolute',
+        aspectRatio: '0.6 / 1',
+        transform: 'translateX(-50%) scale(1)',
+        filter: 'blur(2px)',
+        opacity: 0.8,
+        zIndex: 10,
+        left: isMobile ? '82%' : '72%',
+        height: isMobile ? '16%' : '28%',
+        bottom: isMobile ? '32%' : '14%',
+        transition: 'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms, left 650ms',
+        willChange: 'transform, opacity, left',
+        cursor: 'pointer',
+      };
+    }
     return {
       position: 'absolute',
       aspectRatio: '0.6 / 1',
-      transform: 'translateX(-50%) scale(1)',
-      filter: 'blur(2px)',
-      opacity: 0.8,
-      zIndex: 10,
-      left: isMobile ? '82%' : '72%',
-      height: isMobile ? '16%' : '28%',
-      bottom: isMobile ? '32%' : '14%',
+      transform: 'translateX(-50%) scale(0.7)',
+      filter: 'blur(8px)',
+      opacity: 0,
+      zIndex: 0,
+      left: '50%',
+      height: '20%',
+      bottom: '10%',
+      pointerEvents: 'none',
       transition: 'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms, left 650ms',
       willChange: 'transform, opacity, left',
-      cursor: 'pointer',
     };
   };
 
@@ -333,7 +350,7 @@ export default function Hero() {
         <h1
           id="hero-main-headline"
           className="text-white font-black uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[0.95] mb-3 drop-shadow-lg"
-          style={{ fontFamily: "'Anton', sans-serif" }}
+          style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '-0.02em' }}
         >
           EVERY RIDER HAS A STORY.
         </h1>
@@ -373,7 +390,7 @@ export default function Hero() {
           <div className="flex flex-col pl-2 gap-1">
             <div className="flex items-center gap-2">
               <span className="text-white font-mono font-bold text-xs tracking-widest">
-                0{activeIndex + 1} / 0{heroRacers.length}
+                {String(activeIndex + 1).padStart(2, '0')} / {String(heroRacers.length).padStart(2, '0')}
               </span>
               {/* Interactive index step pills */}
               <div className="flex items-center gap-1.5 ml-1">

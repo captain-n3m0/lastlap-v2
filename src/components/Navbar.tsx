@@ -68,8 +68,8 @@ export default function Navbar() {
               <div className="bg-transparent"></div>
             </div>
             <span
-              className="text-white text-xl sm:text-2xl font-black tracking-tight uppercase"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-white text-xl sm:text-2xl font-black tracking-wide uppercase"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
             >
               LASTLAP
             </span>

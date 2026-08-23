@@ -147,8 +147,8 @@ export default function LapToken() {
 
             <h2
               ref={titleRef}
-              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-tight leading-[0.9]"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-wide leading-[0.9]"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
             >
               $LAP TOKEN
               <br />
@@ -158,7 +158,7 @@ export default function LapToken() {
             </h2>
           </div>
 
-          <p ref={subtitleRef} className="text-sm sm:text-base font-mono text-white/80 max-w-md leading-relaxed">
+          <p ref={subtitleRef} className="text-sm sm:text-base font-sans text-white/80 max-w-md leading-relaxed font-normal">
             The immutable economic engine powering game wagers, paddock garage tuning, genesis staking dividends, and autonomous syndicate governance.
           </p>
         </div>
@@ -166,64 +166,72 @@ export default function LapToken() {
         {/* High-Impact Stat Callouts */}
         <div
           ref={statsRef}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-20"
         >
-          <div className="velocity-skew p-8 rounded-3xl bg-zinc-950 shadow-xl">
-            <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
-              TOTAL SUPPLY
-            </span>
-            <h3
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              100,000,000
-            </h3>
-            <span className="text-xs font-mono text-emerald-400 mt-2 block font-semibold">
+          <div className="velocity-skew p-5 sm:p-6 lg:p-6 xl:p-8 rounded-3xl bg-zinc-950 shadow-xl flex flex-col justify-between overflow-hidden">
+            <div>
+              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
+                TOTAL SUPPLY
+              </span>
+              <h3
+                className="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black text-white leading-tight tracking-normal"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                100,000,000
+              </h3>
+            </div>
+            <span className="text-[11px] sm:text-xs font-mono text-emerald-400 mt-3 block font-semibold">
               FIXED CAP // NO INFLATION
             </span>
           </div>
 
-          <div className="velocity-skew p-8 rounded-3xl bg-zinc-950 shadow-xl">
-            <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
-              RACER STAKING APY
-            </span>
-            <h3
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-amber-400 tracking-tight"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              24.8%
-            </h3>
-            <span className="text-xs font-mono text-white/60 mt-2 block">
+          <div className="velocity-skew p-5 sm:p-6 lg:p-6 xl:p-8 rounded-3xl bg-zinc-950 shadow-xl flex flex-col justify-between overflow-hidden">
+            <div>
+              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
+                RACER STAKING APY
+              </span>
+              <h3
+                className="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black text-amber-400 leading-tight tracking-normal"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                24.8%
+              </h3>
+            </div>
+            <span className="text-[11px] sm:text-xs font-mono text-white/60 mt-3 block">
               REAL-YIELD CIRCUIT DOCK
             </span>
           </div>
 
-          <div className="velocity-skew p-8 rounded-3xl bg-zinc-950 shadow-xl">
-            <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
-              TRANSACTION TAX
-            </span>
-            <h3
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              0.0%
-            </h3>
-            <span className="text-xs font-mono text-white/60 mt-2 block">
+          <div className="velocity-skew p-5 sm:p-6 lg:p-6 xl:p-8 rounded-3xl bg-zinc-950 shadow-xl flex flex-col justify-between overflow-hidden">
+            <div>
+              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
+                TRANSACTION TAX
+              </span>
+              <h3
+                className="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black text-white leading-tight tracking-normal"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                0.0%
+              </h3>
+            </div>
+            <span className="text-[11px] sm:text-xs font-mono text-white/60 mt-3 block">
               ZERO BUY / SELL TAX
             </span>
           </div>
 
-          <div className="velocity-skew p-8 rounded-3xl bg-zinc-950 shadow-xl">
-            <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
-              BURN MECHANISM
-            </span>
-            <h3
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-red-400 tracking-tight"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              15.0%
-            </h3>
-            <span className="text-xs font-mono text-white/60 mt-2 block">
+          <div className="velocity-skew p-5 sm:p-6 lg:p-6 xl:p-8 rounded-3xl bg-zinc-950 shadow-xl flex flex-col justify-between overflow-hidden">
+            <div>
+              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block mb-2">
+                BURN MECHANISM
+              </span>
+              <h3
+                className="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black text-red-400 leading-tight tracking-normal"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                15.0%
+              </h3>
+            </div>
+            <span className="text-[11px] sm:text-xs font-mono text-white/60 mt-3 block">
               ALL WAGER FEES BURNED
             </span>
           </div>
@@ -257,8 +265,8 @@ export default function LapToken() {
                     </div>
 
                     <h3
-                      className="text-2xl font-black text-white uppercase tracking-tight mb-2"
-                      style={{ fontFamily: "'Anton', sans-serif" }}
+                      className="text-2xl font-black text-white uppercase tracking-wide mb-2"
+                      style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                     >
                       {utility.title}
                     </h3>
@@ -284,8 +292,8 @@ export default function LapToken() {
             </span>
 
             <h3
-              className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-3xl sm:text-4xl font-black text-white uppercase tracking-wide mb-4"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
             >
               {TOKEN_UTILITIES[activeTab].title}
             </h3>

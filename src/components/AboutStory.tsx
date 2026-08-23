@@ -184,8 +184,8 @@ export default function AboutStory() {
 
               <h2
                 ref={titleRef}
-                className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-tight leading-[0.9]"
-                style={{ fontFamily: "'Anton', sans-serif" }}
+                className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-wide leading-[0.9]"
+                style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
               >
                 ABOUT
                 <br />
@@ -195,12 +195,12 @@ export default function AboutStory() {
               </h2>
             </div>
 
-            <div ref={narrativeRef} className="space-y-6 text-sm sm:text-base font-mono text-white/80 leading-relaxed">
+            <div ref={narrativeRef} className="space-y-6 text-base sm:text-lg font-sans text-white/85 leading-relaxed font-normal">
               <p className="first-letter:text-5xl first-letter:font-black first-letter:text-white first-letter:float-left first-letter:mr-3 first-letter:leading-none">
-                LastLap is a high-octane motorsport ecosystem containing a genesis catalog of <strong className="text-white">2,525 hand-drawn desert racers</strong>. Born at the intersection of raw underground street culture and sovereign onchain architecture.
+                LastLap is a high-octane motorsport ecosystem containing a genesis catalog of <strong className="text-white font-semibold">2,525 hand-drawn desert racers</strong>. Born at the intersection of raw underground street culture and sovereign onchain architecture.
               </p>
 
-              <p className="text-white/70">
+              <p className="text-white/75 leading-relaxed">
                 We merge genuine desert thrill, mechanical lore, passionate pilot syndicates, and cryptographically verified racing. Every racer is an immutable key unlocking real-time provably fair heats, garage tuning mechanics, and seasonal tournament prize pools.
               </p>
             </div>
@@ -216,12 +216,12 @@ export default function AboutStory() {
                     ECOSYSTEM AFFILIATION
                   </span>
                   <h4
-                    className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight mb-2"
-                    style={{ fontFamily: "'Anton', sans-serif" }}
+                    className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide mb-2"
+                    style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.04em' }}
                   >
                     DESIGNED AROUND THE ROBINHOOD ECOSYSTEM
                   </h4>
-                  <p className="text-xs font-mono text-white/70 leading-relaxed">
+                  <p className="text-sm font-sans text-white/80 leading-relaxed font-normal">
                     Engineered for high-volume accessibility, native wallet bridging, and seamless Web3 motorsport adoption with zero friction for the next million pilots.
                   </p>
                 </div>
@@ -233,8 +233,8 @@ export default function AboutStory() {
               <div className="velocity-skew p-6 rounded-2xl bg-zinc-950">
                 <Users className="w-6 h-6 text-white mb-3" />
                 <h5
-                  className="text-lg font-black text-white uppercase tracking-tight mb-1"
-                  style={{ fontFamily: "'Anton', sans-serif" }}
+                  className="text-lg font-black text-white uppercase tracking-wide mb-1"
+                  style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                 >
                   2,525 RIDERS
                 </h5>
@@ -244,8 +244,8 @@ export default function AboutStory() {
               <div className="velocity-skew p-6 rounded-2xl bg-zinc-950">
                 <Cpu className="w-6 h-6 text-white mb-3" />
                 <h5
-                  className="text-lg font-black text-white uppercase tracking-tight mb-1"
-                  style={{ fontFamily: "'Anton', sans-serif" }}
+                  className="text-lg font-black text-white uppercase tracking-wide mb-1"
+                  style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                 >
                   PROVABLY FAIR
                 </h5>
@@ -255,8 +255,8 @@ export default function AboutStory() {
               <div className="velocity-skew p-6 rounded-2xl bg-zinc-950">
                 <Award className="w-6 h-6 text-white mb-3" />
                 <h5
-                  className="text-lg font-black text-white uppercase tracking-tight mb-1"
-                  style={{ fontFamily: "'Anton', sans-serif" }}
+                  className="text-lg font-black text-white uppercase tracking-wide mb-1"
+                  style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                 >
                   DEEP UTILITY
                 </h5>
@@ -299,8 +299,8 @@ export default function AboutStory() {
           className="velocity-skew p-10 sm:p-16 rounded-3xl bg-zinc-950 text-center relative overflow-hidden"
         >
           <p
-            className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase text-white tracking-tight leading-tight max-w-5xl mx-auto"
-            style={{ fontFamily: "'Anton', sans-serif" }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase text-white tracking-wide leading-tight max-w-5xl mx-auto"
+            style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.04em' }}
           >
             “SPEED IS NOT A MEASUREMENT. IT IS A PHILOSOPHY OF ABSOLUTE CLARITY.”
           </p>

@@ -78,8 +78,8 @@ export default function Footer() {
             </span>
 
             <h2
-              className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight leading-[0.9] mb-6"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-wide leading-[0.9] mb-6"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
             >
               YOUR STORY
               <br />
@@ -88,7 +88,7 @@ export default function Footer() {
               </span>
             </h2>
 
-            <p className="text-base sm:text-xl font-mono text-white/80 uppercase tracking-wider mb-10 max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl font-sans text-white/90 tracking-normal mb-10 max-w-2xl mx-auto font-medium">
               “The road is open. Choose your racer and leave your tire marks in the desert sand.”
             </p>
 
@@ -132,8 +132,8 @@ export default function Footer() {
                 <div className="bg-transparent"></div>
               </div>
               <span
-                className="text-2xl sm:text-3xl font-black tracking-tight uppercase"
-                style={{ fontFamily: "'Anton', sans-serif" }}
+                className="text-2xl sm:text-3xl font-black tracking-wide uppercase"
+                style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
               >
                 LASTLAP
               </span>

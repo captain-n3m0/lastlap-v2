@@ -107,8 +107,8 @@ export default function Roadmap() {
 
             <h2
               ref={titleRef}
-              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-tight leading-[0.9]"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-wide leading-[0.9]"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
             >
               RALLY
               <br />
@@ -118,7 +118,7 @@ export default function Roadmap() {
             </h2>
           </div>
 
-          <p ref={subtitleRef} className="text-sm sm:text-base font-mono text-white/80 max-w-md leading-relaxed">
+          <p ref={subtitleRef} className="text-sm sm:text-base font-sans text-white/80 max-w-md leading-relaxed font-normal">
             Our strategic trajectory across the desert horizon. Milestone checkpoints tracking genesis deployment through decentralized syndicate championships.
           </p>
         </div>
@@ -175,8 +175,8 @@ export default function Roadmap() {
 
                   {/* Title & Description */}
                   <h3
-                    className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-4"
-                    style={{ fontFamily: "'Anton', sans-serif" }}
+                    className="text-2xl sm:text-3xl font-black text-white uppercase tracking-wide mb-4"
+                    style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                   >
                     {phase.title}
                   </h3>

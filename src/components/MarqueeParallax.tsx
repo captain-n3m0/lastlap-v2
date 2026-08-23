@@ -141,8 +141,8 @@ export default function MarqueeParallax() {
         {[...marqueeText1, ...marqueeText1].map((text, i) => (
           <span
             key={`m1-${i}`}
-            className="text-4xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white/90 flex items-center gap-6"
-            style={{ fontFamily: "'Anton', sans-serif" }}
+            className="text-4xl sm:text-7xl lg:text-8xl font-black uppercase tracking-wider text-white/90 flex items-center gap-6"
+            style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.08em' }}
           >
             {text}
           </span>
@@ -157,8 +157,8 @@ export default function MarqueeParallax() {
         {[...marqueeText2, ...marqueeText2].map((text, i) => (
           <span
             key={`m2-${i}`}
-            className="text-3xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-stroke-white text-transparent hover:text-white transition-colors duration-300 flex items-center gap-6"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="text-3xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-wider text-stroke-white text-transparent hover:text-white transition-colors duration-300 flex items-center gap-6"
+            style={{ fontFamily: "'Syne', sans-serif", letterSpacing: '0.08em' }}
           >
             {text}
           </span>

@@ -210,8 +210,8 @@ export default function RacingGame() {
 
             <h2
               ref={titleRef}
-              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-tight leading-[0.9]"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-wide leading-[0.9]"
+              style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
             >
               ENTER THE
               <br />

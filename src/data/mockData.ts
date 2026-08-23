@@ -1,5 +1,108 @@
 import { Racer, RoadmapPhase, FAQItem, GameBike } from '../types';
 
+export interface HeroArtwork {
+  id: string;
+  name: string;
+  serial: string;
+  image: string;
+  bgImage?: string;
+  color: string;
+  panelColor: string;
+}
+
+export const HERO_ARTWORKS: HeroArtwork[] = [
+  {
+    id: '01',
+    name: '#01',
+    serial: '#0001',
+    image: 'https://cdn.lastlap.fun/lastlap/Br4ted.png',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/Br4ted.png',
+    color: '#A94E34',
+    panelColor: '#C46246',
+  },
+  {
+    id: '02',
+    name: '#02',
+    serial: '#0002',
+    image: 'https://cdn.lastlap.fun/lastlap/H0ld.png',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/H0ld.png',
+    color: '#52523A',
+    panelColor: '#6B6A4B',
+  },
+  {
+    id: '03',
+    name: '#03',
+    serial: '#0003',
+    image: 'https://cdn.lastlap.fun/lastlap/Honorary_for_Oguz.png',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/Honorary_for_Oguz.png',
+    color: '#28485B',
+    panelColor: '#38617A',
+  },
+  {
+    id: '04',
+    name: '#04',
+    serial: '#0004',
+    image: 'https://cdn.lastlap.fun/lastlap/Post_for_17th_August.png',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/Post_for_17th_August.png',
+    color: '#8A5B36',
+    panelColor: '#A87348',
+  },
+  {
+    id: '05',
+    name: '#05',
+    serial: '#0005',
+    image: 'https://cdn.lastlap.fun/lastlap/mattie.png',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/mattie.png',
+    color: '#633857',
+    panelColor: '#7E4970',
+  },
+  {
+    id: '06',
+    name: '#06',
+    serial: '#0006',
+    image: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-03.jpg',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-03.jpg',
+    color: '#42372E',
+    panelColor: '#5C4E42',
+  },
+  {
+    id: '07',
+    name: '#07',
+    serial: '#0007',
+    image: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-23.jpg',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-23.jpg',
+    color: '#6E1E1E',
+    panelColor: '#8C2B2B',
+  },
+  {
+    id: '08',
+    name: '#08',
+    serial: '#0008',
+    image: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-38.jpg',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-38.jpg',
+    color: '#1D4542',
+    panelColor: '#2B615D',
+  },
+  {
+    id: '09',
+    name: '#09',
+    serial: '#0009',
+    image: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-56.jpg',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-53-56.jpg',
+    color: '#3B4252',
+    panelColor: '#4C566A',
+  },
+  {
+    id: '10',
+    name: '#10',
+    serial: '#0010',
+    image: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-54-10.jpg',
+    bgImage: 'https://cdn.lastlap.fun/lastlap/photo_2026-08-23_14-54-10.jpg',
+    color: '#5C382A',
+    panelColor: '#7A4D3B',
+  },
+];
+
 export const RACERS: Racer[] = [
   {
     id: 'dune-strider',
@@ -18,6 +121,8 @@ export const RACERS: Racer[] = [
       handling: 91,
     },
     rarity: 'Legendary',
+    archetype: 'VANGUARD',
+    bike: 'SAND VIPER 1100',
   },
   {
     id: 'iron-sight',
@@ -36,6 +141,8 @@ export const RACERS: Racer[] = [
       handling: 87,
     },
     rarity: 'Epic',
+    archetype: 'HEAVYWEIGHT',
+    bike: 'DUSK HOUND V8',
   },
   {
     id: 'apex',
@@ -54,6 +161,8 @@ export const RACERS: Racer[] = [
       handling: 99,
     },
     rarity: 'Legendary',
+    archetype: 'INTERCEPTOR',
+    bike: 'PERIMETER SPEC-R',
   },
   {
     id: 'sandwedge',
@@ -72,6 +181,8 @@ export const RACERS: Racer[] = [
       handling: 93,
     },
     rarity: 'Rare',
+    archetype: 'SCOUT',
+    bike: 'RIDGE RUNNER 4X',
   },
   {
     id: 'wild-card',
@@ -89,7 +200,9 @@ export const RACERS: Racer[] = [
       grit: 82,
       handling: 89,
     },
-    rarity: 'Epic',
+    rarity: 'Legendary',
+    archetype: 'PROTOTYPE',
+    bike: 'HYPER PULSE X',
   },
   {
     id: 'dust-ghost',
@@ -108,6 +221,8 @@ export const RACERS: Racer[] = [
       handling: 96,
     },
     rarity: 'Rare',
+    archetype: 'SPECTER',
+    bike: 'MIRAGE 750',
   },
   {
     id: 'redline-rebel',
@@ -125,7 +240,9 @@ export const RACERS: Racer[] = [
       grit: 90,
       handling: 88,
     },
-    rarity: 'Legendary',
+    rarity: 'Epic',
+    archetype: 'ENFORCER',
+    bike: 'SCARLET FURY 1200',
   },
   {
     id: 'oasis-drift',
@@ -144,6 +261,8 @@ export const RACERS: Racer[] = [
       handling: 98,
     },
     rarity: 'Epic',
+    archetype: 'DRIFTER',
+    bike: 'AQUA SLICK TURBO',
   },
 ];
 

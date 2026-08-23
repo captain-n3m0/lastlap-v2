@@ -3,8 +3,9 @@
 @theme {
   --font-anton: 'Anton', sans-serif;
   --font-syne: 'Syne', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
 
 * {
@@ -27,10 +28,11 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 /* Custom editorial selection */
@@ -57,14 +59,34 @@ body {
 /* Magazine typography & utility classes */
 .font-display {
   font-family: 'Anton', sans-serif;
+  letter-spacing: 0.05em;
 }
 
 .font-editorial {
   font-family: 'Syne', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .font-code {
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* Global letter spacing for bold & display headings */
+h1, h2, h3, h4, h5, h6,
+.font-black,
+.font-extrabold,
+[style*="'Anton'"],
+[style*="'Syne'"] {
+  letter-spacing: 0.04em;
+}
+
+/* Specific spacious typography classes */
+.tracking-display-loose {
+  letter-spacing: 0.08em;
+}
+
+.tracking-display-wide {
+  letter-spacing: 0.05em;
 }
 
 /* Noise overlay */

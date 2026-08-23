@@ -98,8 +98,8 @@ export default function FAQ() {
           </div>
           <h2
             ref={titleRef}
-            className="text-5xl sm:text-7xl font-black text-white uppercase tracking-tight mb-4"
-            style={{ fontFamily: "'Anton', sans-serif" }}
+            className="text-5xl sm:text-7xl font-black text-white uppercase tracking-wide mb-4"
+            style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.06em' }}
           >
             FREQUENTLY ASKED
             <br />
@@ -107,7 +107,7 @@ export default function FAQ() {
               QUESTIONS.
             </span>
           </h2>
-          <p ref={subtitleRef} className="text-sm sm:text-base font-mono text-white/70 uppercase tracking-widest">
+          <p ref={subtitleRef} className="text-sm sm:text-base font-sans text-white/80 font-normal">
             Critical intelligence before entering the circuit.
           </p>
         </div>
@@ -132,8 +132,8 @@ export default function FAQ() {
                   aria-expanded={isOpen}
                   className="w-full p-7 text-left flex items-center justify-between gap-6 cursor-pointer"
                 >
-                  <span className="text-lg sm:text-xl font-bold font-mono text-white flex items-center gap-4">
-                    <span className="text-xs font-mono text-white/40">
+                  <span className="text-lg sm:text-xl font-bold font-sans text-white flex items-center gap-4">
+                    <span className="text-xs font-mono text-white/50 font-bold">
                       0{idx + 1}
                     </span>
                     {item.question}
@@ -148,7 +148,7 @@ export default function FAQ() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-7 pb-7 pt-2 text-sm sm:text-base font-mono text-white/75 leading-relaxed border-t border-white/10">
+                  <div className="px-7 pb-7 pt-2 text-sm sm:text-base font-sans text-white/85 leading-relaxed font-normal border-t border-white/10">
                     {item.answer}
                   </div>
                 )}
