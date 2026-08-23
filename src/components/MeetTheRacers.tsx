@@ -49,10 +49,20 @@ export default function MeetTheRacers() {
     }));
   }, [filteredRacers]);
 
-  // Duplicate for seamless infinite marquee loop
-  const allBooks = useMemo(() => {
-    return [...baseBooks, ...baseBooks];
+  // Ensure one full set is sufficiently wide to cover ultra-wide displays without trailing gaps
+  const singleSet = useMemo(() => {
+    if (baseBooks.length === 0) return [];
+    let items = [...baseBooks];
+    while (items.length < 24) {
+      items = [...items, ...baseBooks];
+    }
+    return items;
   }, [baseBooks]);
+
+  // Duplicate for seamless 50% infinite marquee loop
+  const allBooks = useMemo(() => {
+    return [...singleSet, ...singleSet];
+  }, [singleSet]);
 
   const total = allBooks.length;
 
