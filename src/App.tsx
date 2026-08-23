@@ -1,0 +1,71 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import MarqueeParallax from './components/MarqueeParallax';
+import JourneyStrip from './components/JourneyStrip';
+import MeetTheRacers from './components/MeetTheRacers';
+import RacingGame from './components/RacingGame';
+import LapToken from './components/LapToken';
+import Roadmap from './components/Roadmap';
+import AboutStory from './components/AboutStory';
+import FAQ from './components/FAQ';
+import Footer from './components/Footer';
+import NotFound from './components/NotFound';
+import { useScrollVelocitySkew } from './hooks/useScrollVelocitySkew';
+
+function LandingPage() {
+  return (
+    <div className="relative w-full min-h-screen bg-[#060606] text-white font-sans selection:bg-white selection:text-black">
+      {/* Navigation Header */}
+      <Navbar />
+
+      {/* 1. Hero Section with GSAP Parallax */}
+      <Hero />
+
+      {/* 2. Kinetic Typographic Parallax Marquee */}
+      <MarqueeParallax />
+
+      {/* 3. Journey Strip (Collect → Race → Earn) */}
+      <JourneyStrip />
+
+      {/* 4. Meet the Racers (Lookbook Dossier & Interactive Filters) */}
+      <MeetTheRacers />
+
+      {/* 5. Game: Enter the Final Lap (Live Heats & Provably Fair) */}
+      <RacingGame />
+
+      {/* 6. LAP Token Manifest */}
+      <LapToken />
+
+      {/* 7. Roadmap (Rally Checkpoints) */}
+      <Roadmap />
+
+      {/* 8. About & Origin Story */}
+      <AboutStory />
+
+      {/* 9. Frequently Asked Questions (FAQ) */}
+      <FAQ />
+
+      {/* 10. Final CTA & Editorial Footer */}
+      <Footer />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+

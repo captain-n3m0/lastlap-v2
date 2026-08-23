@@ -1,0 +1,6 @@
+{
+  "name": "LASTLAP Hero",
+  "description": "Full LASTLAP Web3 motorcycle racing ecosystem landing experience and 404 error route",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
