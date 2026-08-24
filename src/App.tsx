@@ -23,41 +23,41 @@ import { useScrollVelocitySkew } from './hooks/useScrollVelocitySkew';
 function LandingPage() {
   return (
     <div className="relative w-full min-h-screen bg-[#060606] text-white font-sans selection:bg-white selection:text-black">
-      {/* Custom Racing Reticle Cursor */}
+      {/* Custom Circular Glass Magnification Lens Cursor */}
       <CustomCursor />
 
       {/* Navigation Header */}
       <Navbar />
 
-      {/* 1. Hero Section with GSAP Parallax */}
-      <Hero />
+        {/* 1. Hero Section with GSAP Parallax */}
+        <Hero />
 
-      {/* 2. Kinetic Typographic Parallax Marquee */}
-      <MarqueeParallax />
+        {/* 2. Kinetic Typographic Parallax Marquee */}
+        <MarqueeParallax />
 
-      {/* 3. Journey Strip (Collect → Race → Earn) */}
-      <JourneyStrip />
+        {/* 3. Journey Strip (Collect → Race → Earn) */}
+        <JourneyStrip />
 
-      {/* 4. Meet the Racers (Lookbook Dossier & Interactive Filters) */}
-      <MeetTheRacers />
+        {/* 4. Meet the Racers (Lookbook Dossier & Interactive Filters) */}
+        <MeetTheRacers />
 
-      {/* 5. Game: Enter the Final Lap (Hidden for now) */}
-      {/* <RacingGame /> */}
+        {/* 5. Game: Enter the Final Lap (Hidden for now) */}
+        {/* <RacingGame /> */}
 
-      {/* 6. LAP Token Manifest */}
-      <LapToken />
+        {/* 6. LAP Token Manifest */}
+        <LapToken />
 
-      {/* 7. Roadmap (Rally Checkpoints) */}
-      <Roadmap />
+        {/* 7. Roadmap (Rally Checkpoints) */}
+        <Roadmap />
 
-      {/* 8. About & Origin Story */}
-      <AboutStory />
+        {/* 8. About & Origin Story */}
+        <AboutStory />
 
-      {/* 9. Frequently Asked Questions (FAQ) */}
-      <FAQ />
+        {/* 9. Frequently Asked Questions (FAQ) */}
+        <FAQ />
 
-      {/* 10. Final CTA & Editorial Footer */}
-      <Footer />
+        {/* 10. Final CTA & Editorial Footer */}
+        <Footer />
     </div>
   );
 }
