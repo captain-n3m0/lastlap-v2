@@ -7,7 +7,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { RACERS } from '../data/mockData';
+import { HERO_GALLERY_RACERS } from '../data/mockData';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,7 +19,7 @@ export default function Hero() {
     typeof window !== 'undefined' ? window.innerWidth < 640 : false
   );
 
-  const heroRacers = RACERS.slice(0, 3);
+  const heroRacers = HERO_GALLERY_RACERS;
   const animTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
 

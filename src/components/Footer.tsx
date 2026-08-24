@@ -185,9 +185,6 @@ export default function Footer() {
                 <a href="#racers" className="hover:text-white transition-colors">MEET THE RACERS</a>
               </li>
               <li>
-                <a href="#game" className="hover:text-white transition-colors">ENTER THE FINAL LAP</a>
-              </li>
-              <li>
                 <a href="#token" className="hover:text-white transition-colors">LAP TOKEN ENGINE</a>
               </li>
               <li>
@@ -210,9 +207,6 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#token" className="hover:text-white transition-colors">TOKEN AUDIT SPEC</a>
-              </li>
-              <li>
-                <a href="#game" className="hover:text-white transition-colors">PROVABLY FAIR VERIFIER</a>
               </li>
               <li>
                 <a href="#about" className="hover:text-white transition-colors">ROBINHOOD ECOSYSTEM PROTOCOL</a>

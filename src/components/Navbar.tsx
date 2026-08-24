@@ -34,7 +34,6 @@ export default function Navbar() {
     { label: 'HOME', href: '#hero' },
     { label: 'JOURNEY', href: '#journey' },
     { label: 'RACERS', href: '#racers' },
-    { label: 'GAME', href: '#game' },
     { label: 'TOKEN', href: '#token' },
     { label: 'ROADMAP', href: '#roadmap' },
     { label: 'MANIFESTO', href: '#about' },

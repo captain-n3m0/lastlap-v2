@@ -15,7 +15,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function MeetTheRacers() {
   const [selectedRacer, setSelectedRacer] = useState<Racer | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
   const cardSwapRef = useRef<CardSwapRef>(null);
 
@@ -23,24 +22,12 @@ export default function MeetTheRacers() {
   const headerRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
 
-  const categories = ['ALL', 'LEGENDARY', 'EPIC', 'RARE'];
-
   const handleActiveChange = useCallback((idx: number) => {
     setActiveCardIndex(idx);
   }, []);
 
-  const filteredRacers = useMemo(() => {
-    const list = activeCategory === 'ALL'
-      ? RACERS
-      : RACERS.filter((r) => r.rarity.toUpperCase() === activeCategory.toUpperCase());
-    return list;
-  }, [activeCategory]);
-
-  const activeRacer = filteredRacers[activeCardIndex] || filteredRacers[0] || RACERS[0];
-
-  useEffect(() => {
-    setActiveCardIndex(0);
-  }, [activeCategory]);
+  const racersList = RACERS;
+  const activeRacer = racersList[activeCardIndex] || racersList[0];
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -102,7 +89,7 @@ export default function MeetTheRacers() {
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs font-mono font-bold tracking-[0.25em] text-emerald-400 uppercase">
-                ROSTER ARCHIVE // CHAPTER 02
+                CHAPTER 02 // ROSTER ARCHIVE
               </span>
             </div>
             <h2
@@ -114,27 +101,6 @@ export default function MeetTheRacers() {
             <p className="text-white/60 font-mono text-sm sm:text-base max-w-xl mt-3">
               Perspective dossier showcase. Swap through 2,525 provably fair pilots, custom cyber rigs, and high-velocity telemetry.
             </p>
-          </div>
-
-          {/* Rarity Category Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-2 bg-zinc-950/80 p-1.5 rounded-2xl border border-white/10 backdrop-blur-md self-start md:self-auto">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
-                    isActive
-                      ? 'bg-white text-black shadow-lg scale-105'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
           </div>
         </div>
 
@@ -152,16 +118,6 @@ export default function MeetTheRacers() {
               <div className="flex items-center justify-between mb-4">
                 <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-mono font-bold text-white tracking-widest">
                   SERIAL {activeRacer.serial}
-                </span>
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider"
-                  style={{
-                    backgroundColor: `${activeRacer.color}25`,
-                    color: activeRacer.color || '#fff',
-                    border: `1px solid ${activeRacer.color}40`,
-                  }}
-                >
-                  {activeRacer.rarity}
                 </span>
               </div>
 
@@ -252,12 +208,12 @@ export default function MeetTheRacers() {
               <div className="flex items-center gap-2">
                 <span>ACTIVE DECK:</span>
                 <span className="text-white font-bold">
-                  {String(activeCardIndex + 1).padStart(2, '0')} / {String(filteredRacers.length).padStart(2, '0')}
+                  {String(activeCardIndex + 1).padStart(2, '0')} / {String(racersList.length).padStart(2, '0')}
                 </span>
                 <span className="text-[10px] text-white/30 hidden sm:inline">• DRAG CARD TO REORDER</span>
               </div>
               <div className="flex items-center gap-1.5">
-                {filteredRacers.map((_, i) => (
+                {racersList.map((_, i) => (
                   <span
                     key={i}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -284,11 +240,11 @@ export default function MeetTheRacers() {
                 easing="elastic"
                 onActiveChange={handleActiveChange}
                 onCardClick={(idx) => {
-                  const clicked = filteredRacers[idx];
+                  const clicked = racersList[idx];
                   if (clicked) setSelectedRacer(clicked);
                 }}
               >
-                {filteredRacers.map((racer) => (
+                {racersList.map((racer) => (
                   <Card
                     key={racer.id}
                     customClass="cursor-pointer group overflow-hidden border border-white/15 hover:border-white/50 transition-colors duration-300"
@@ -305,16 +261,6 @@ export default function MeetTheRacers() {
                             {racer.serial}
                           </span>
                         </div>
-                        <span
-                          className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-widest"
-                          style={{
-                            backgroundColor: `${racer.color}30`,
-                            color: racer.color,
-                            border: `1px solid ${racer.color}50`,
-                          }}
-                        >
-                          {racer.rarity}
-                        </span>
                       </div>
 
                       {/* Character Visual Showcase */}
@@ -427,10 +373,6 @@ export default function MeetTheRacers() {
                   alt={selectedRacer.serial}
                   className="relative z-10 h-full object-contain object-bottom"
                 />
-
-                <div className="absolute top-4 right-4 px-3 py-1 rounded bg-black/70 backdrop-blur-md border border-white/20 text-xs font-mono font-bold text-white uppercase">
-                  RARITY: {selectedRacer.rarity}
-                </div>
               </div>
 
               {/* Telemetry Stats Grid */}

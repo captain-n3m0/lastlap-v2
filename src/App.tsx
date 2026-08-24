@@ -37,8 +37,8 @@ function LandingPage() {
       {/* 4. Meet the Racers (Lookbook Dossier & Interactive Filters) */}
       <MeetTheRacers />
 
-      {/* 5. Game: Enter the Final Lap (Live Heats & Provably Fair) */}
-      <RacingGame />
+      {/* 5. Game: Enter the Final Lap (Hidden for now) */}
+      {/* <RacingGame /> */}
 
       {/* 6. LAP Token Manifest */}
       <LapToken />

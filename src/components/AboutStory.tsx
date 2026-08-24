@@ -174,7 +174,7 @@ export default function AboutStory() {
             <div ref={headerRef} className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="text-[11px] font-mono font-bold tracking-[0.3em] text-white/50 uppercase">
-                  CHAPTER 06 // MANIFESTO & ORIGINS
+                  CHAPTER 05 // MANIFESTO & ORIGINS
                 </span>
                 <div ref={headerLineRef} className="h-[1px] w-12 bg-white/20 origin-left"></div>
                 <span className="text-[11px] font-mono text-white/60 tracking-widest uppercase">

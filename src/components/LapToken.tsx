@@ -133,15 +133,15 @@ export default function LapToken() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
         {/* Editorial Section Masthead */}
-        <div ref={headerRef} className="flex flex-col lg:flex-row lg:items-end justify-between mb-20 gap-8">
+        <div ref={headerRef} className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-[11px] font-mono font-bold tracking-[0.3em] text-white/50 uppercase">
-                CHAPTER 04 // PROTOCOL TOKENOMICS
+                CHAPTER 03 // PROTOCOL TOKENOMICS
               </span>
               <div ref={headerLineRef} className="h-[1px] w-12 bg-white/20 origin-left"></div>
-              <span className="text-[11px] font-mono text-amber-400 tracking-widest uppercase">
-                $LAP FINANCIAL DOSSIER
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-[10px] font-mono font-bold text-amber-400 tracking-widest uppercase animate-pulse">
+                COMING SOON
               </span>
             </div>
 
@@ -158,9 +158,83 @@ export default function LapToken() {
             </h2>
           </div>
 
-          <p ref={subtitleRef} className="text-sm sm:text-base font-sans text-white/80 max-w-md leading-relaxed font-normal">
-            The immutable economic engine powering game wagers, paddock garage tuning, genesis staking dividends, and autonomous syndicate governance.
-          </p>
+          <div className="flex flex-col gap-3 max-w-md">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl w-fit">
+              <Lock className="w-3.5 h-3.5" />
+              <span>TOKENOMICS ARCHITECTURE IN DEVELOPMENT</span>
+            </div>
+            <p ref={subtitleRef} className="text-sm sm:text-base font-sans text-white/70 leading-relaxed font-normal">
+              The official $LAP economic engine specifications, liquidity bootstrapping pools, and genesis staking dividends are currently being finalized for mainnet launch.
+            </p>
+          </div>
+        </div>
+
+        {/* Coming Soon Hero Banner / Teaser Matrix */}
+        <div className="relative rounded-3xl border border-white/10 bg-zinc-950/80 p-8 sm:p-12 mb-16 overflow-hidden">
+          {/* Subtle Grid Background Accent */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.06),transparent_50%)] pointer-events-none" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-8 border-b border-white/10">
+            <div>
+              <span className="text-[10px] font-mono font-bold text-white/50 tracking-[0.25em] uppercase block mb-1">
+                STATUS // PRE-FLIGHT LOCK
+              </span>
+              <h3
+                className="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                COMING SOON TO MAINNET
+              </h3>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <span className="flex h-3 w-3 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400"></span>
+              </span>
+              <span className="text-xs font-mono font-bold tracking-widest text-white/80 uppercase">
+                CONTRACT AUDIT & TGE IN QUEUE
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
+            <div className="p-5 rounded-2xl bg-black/60 border border-white/5 flex flex-col justify-between">
+              <div className="flex items-center gap-2 text-amber-400 mb-2">
+                <Coins className="w-4 h-4" />
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">SUPPLY ALLOCATION</span>
+              </div>
+              <span className="text-xl font-bold text-white font-mono">100M FIXED CAP</span>
+              <span className="text-[11px] font-mono text-white/50 mt-1">Deflationary Wager Burns</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-black/60 border border-white/5 flex flex-col justify-between">
+              <div className="flex items-center gap-2 text-amber-400 mb-2">
+                <Percent className="w-4 h-4" />
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">CIRCUIT STAKING</span>
+              </div>
+              <span className="text-xl font-bold text-white font-mono">REAL-YIELD APY</span>
+              <span className="text-[11px] font-mono text-white/50 mt-1">Racer Staking Dividends</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-black/60 border border-white/5 flex flex-col justify-between">
+              <div className="flex items-center gap-2 text-amber-400 mb-2">
+                <Zap className="w-4 h-4" />
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">TRANSACTIONS</span>
+              </div>
+              <span className="text-xl font-bold text-white font-mono">0% TAX MODEL</span>
+              <span className="text-[11px] font-mono text-white/50 mt-1">Zero Friction Transfers</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-black/60 border border-white/5 flex flex-col justify-between">
+              <div className="flex items-center gap-2 text-amber-400 mb-2">
+                <Shield className="w-4 h-4" />
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">SECURITY</span>
+              </div>
+              <span className="text-xl font-bold text-white font-mono">MULTI-SIG VAULT</span>
+              <span className="text-[11px] font-mono text-white/50 mt-1">Audited Token Architecture</span>
+            </div>
+          </div>
         </div>
 
         {/* High-Impact Stat Callouts */}

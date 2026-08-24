@@ -94,7 +94,7 @@ export default function FAQ() {
         <div ref={headerRef} className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/15 text-xs font-mono text-white/70 mb-4 uppercase tracking-widest">
             <Radio className="w-3.5 h-3.5 text-amber-400" />
-            CHAPTER 07 // INTEL DISPATCH
+            CHAPTER 06 // INTEL DISPATCH
           </div>
           <h2
             ref={titleRef}

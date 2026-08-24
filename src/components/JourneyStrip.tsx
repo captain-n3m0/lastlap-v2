@@ -83,42 +83,16 @@ export default function JourneyStrip() {
         );
       }
 
-      // Continuous subtle parallax on step cards during scroll
-      if (card1Ref.current) {
-        gsap.to(card1Ref.current, {
-          y: -25,
+      // Continuous subtle parallax on step cards during scroll (synchronized alignment)
+      if (cardsContainerRef.current) {
+        gsap.to(cardsContainerRef.current, {
+          y: -20,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: 1.5,
-          },
-        });
-      }
-
-      if (card2Ref.current) {
-        gsap.to(card2Ref.current, {
-          y: -8,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
-          },
-        });
-      }
-
-      if (card3Ref.current) {
-        gsap.to(card3Ref.current, {
-          y: -40,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
+            scrub: 1.2,
           },
         });
       }
@@ -226,7 +200,7 @@ export default function JourneyStrip() {
         {/* 3 Steps Editorial Magazine Cards Grid */}
         <div
           ref={cardsContainerRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 mb-32"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 mb-32 items-stretch"
         >
           {steps.map((step) => {
             const Icon = step.icon;
@@ -235,7 +209,7 @@ export default function JourneyStrip() {
                 key={step.num}
                 ref={step.ref}
                 id={`journey-step-${step.title.toLowerCase()}`}
-                className="velocity-skew relative p-8 sm:p-10 rounded-2xl bg-zinc-950/90 border border-white/10 flex flex-col justify-between hover:border-white/40 hover:bg-zinc-900/90 transition-all duration-300 group shadow-2xl"
+                className="velocity-skew relative p-8 sm:p-10 rounded-2xl bg-zinc-950/90 border border-white/10 flex flex-col justify-between h-full hover:border-white/40 hover:bg-zinc-900/90 transition-all duration-300 group shadow-2xl"
               >
                 {/* Number & Icon header */}
                 <div>

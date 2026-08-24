@@ -96,7 +96,7 @@ export default function Roadmap() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-[11px] font-mono font-bold tracking-[0.3em] text-white/50 uppercase">
-                CHAPTER 05 // STRATEGIC EXPEDITION
+                CHAPTER 04 // STRATEGIC EXPEDITION
               </span>
               <div ref={headerLineRef} className="h-[1px] w-12 bg-white/20 origin-left"></div>
               <span className="text-[11px] font-mono text-red-400 tracking-widest uppercase flex items-center gap-1">
