@@ -182,6 +182,82 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   // Active hover indicator slot state for rendering docking guide
   const [dockingSlotIndex, setDockingSlotIndex] = useState<number | null>(null);
 
+  // Helper to trigger image trailing motion animations inside a card element
+  const triggerImageTrail = (
+    cardEl: HTMLElement | null,
+    options: {
+      trailX?: number;
+      trailY?: number;
+      trailScale?: number;
+      trailOpacity?: number;
+      blur?: number;
+      duration?: number;
+      ease?: string;
+    }
+  ) => {
+    if (!cardEl) return;
+    const trail1 = cardEl.querySelector<HTMLElement>('.card-trail-ghost-1');
+    const trail2 = cardEl.querySelector<HTMLElement>('.card-trail-ghost-2');
+    const mainImg = cardEl.querySelector<HTMLElement>('.card-main-image');
+    const speedLines = cardEl.querySelector<HTMLElement>('.card-speed-streak');
+
+    const {
+      trailX = 0,
+      trailY = 0,
+      trailScale = 1,
+      trailOpacity = 0,
+      blur = 0,
+      duration = 0.5,
+      ease = 'power2.out'
+    } = options;
+
+    if (trail1) {
+      gsap.to(trail1, {
+        x: trailX,
+        y: trailY,
+        scale: trailScale,
+        opacity: trailOpacity,
+        filter: blur > 0 ? `blur(${blur}px)` : 'none',
+        duration,
+        ease,
+        overwrite: 'auto'
+      });
+    }
+
+    if (trail2) {
+      gsap.to(trail2, {
+        x: trailX * 1.6,
+        y: trailY * 1.6,
+        scale: trailScale * 1.03,
+        opacity: trailOpacity * 0.6,
+        filter: blur > 0 ? `blur(${blur * 1.5}px)` : 'none',
+        duration: duration * 1.1,
+        ease,
+        overwrite: 'auto'
+      });
+    }
+
+    if (mainImg && (trailX !== 0 || trailY !== 0)) {
+      gsap.to(mainImg, {
+        x: -trailX * 0.25,
+        y: -trailY * 0.25,
+        duration: duration * 0.8,
+        ease,
+        overwrite: 'auto'
+      });
+    }
+
+    if (speedLines) {
+      gsap.to(speedLines, {
+        opacity: trailOpacity > 0 ? 0.65 : 0,
+        scaleY: trailOpacity > 0 ? 1.2 : 1,
+        duration: 0.3,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+  };
+
   // Animate all cards to their current ordered standard slots
   const renderOrder = useCallback((animate = true, duration = 0.6) => {
     const total = order.current.length;
@@ -208,6 +284,15 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       } else {
         placeNow(el, slot);
       }
+
+      // Reset trailing effects
+      triggerImageTrail(el, {
+        trailX: 0,
+        trailY: 0,
+        trailOpacity: 0,
+        blur: 0,
+        duration: 0.4
+      });
     });
 
     if (order.current[0] !== undefined) {
@@ -230,9 +315,20 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       const tl = gsap.timeline({
         onComplete: () => {
           isSwapping.current = false;
+          triggerImageTrail(elLast, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.4 });
         }
       });
       tlRef.current = tl;
+
+      // Activate trailing motion effect for swinging card
+      triggerImageTrail(elLast, {
+        trailX: 24,
+        trailY: -20,
+        trailScale: 1.06,
+        trailOpacity: 0.55,
+        blur: 2.5,
+        duration: 0.6
+      });
 
       // Bring last card up and to front
       tl.set(elLast, { zIndex: total + 10 });
@@ -246,12 +342,21 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         ease: 'power2.out'
       });
 
-      // Shift other cards back
+      // Shift other cards back with subtle trailing response
       const remaining = order.current.slice(0, -1);
       remaining.forEach((idx, i) => {
         const el = refs[idx]?.current;
         if (!el) return;
         const slot = makeSlot(i + 1, cardDistance, verticalDistance, total, skewAmount);
+        
+        triggerImageTrail(el, {
+          trailX: -8,
+          trailY: 6,
+          trailOpacity: 0.25,
+          blur: 1.5,
+          duration: 0.4
+        });
+
         tl.to(
           el,
           {
@@ -263,7 +368,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
             opacity: slot.opacity ?? 1,
             zIndex: slot.zIndex,
             duration: 0.5,
-            ease: 'power2.out'
+            ease: 'power2.out',
+            onComplete: () => {
+              triggerImageTrail(el, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.3 });
+            }
           },
           '0.1'
         );
@@ -306,9 +414,20 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     const tl = gsap.timeline({
       onComplete: () => {
         isSwapping.current = false;
+        triggerImageTrail(elFront, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.4 });
       }
     });
     tlRef.current = tl;
+
+    // Apply upward vertical trailing motion effect to the dropping front card
+    triggerImageTrail(elFront, {
+      trailX: -10,
+      trailY: -35,
+      trailScale: 1.04,
+      trailOpacity: 0.6,
+      blur: 3,
+      duration: config.durDrop * 0.7
+    });
 
     tl.to(elFront, {
       y: '+=450',
@@ -321,6 +440,16 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       const el = refs[idx]?.current;
       if (!el) return;
       const slot = makeSlot(i, cardDistance, verticalDistance, refs.length, skewAmount);
+
+      // Subtle forward velocity trail for promoted cards
+      triggerImageTrail(el, {
+        trailX: 12,
+        trailY: -8,
+        trailOpacity: 0.35,
+        blur: 1.8,
+        duration: config.durMove * 0.6
+      });
+
       tl.set(el, { zIndex: slot.zIndex }, 'promote');
       tl.to(
         el,
@@ -332,7 +461,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           scale: slot.scale ?? 1,
           opacity: slot.opacity ?? 1,
           duration: config.durMove,
-          ease: config.ease
+          ease: config.ease,
+          onComplete: () => {
+            triggerImageTrail(el, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.4 });
+          }
         },
         `promote+=${i * 0.1}`
       );
@@ -440,7 +572,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     };
   }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs, triggerSwap, restartTimer]);
 
-  // Handle Drag & Touch Swipe Gestures
+  // Handle Drag & Touch Swipe Gestures with real-time trailing motion feedback
   const handlePointerDown = (cardIndex: number, e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
@@ -500,8 +632,9 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     const onPointerMove = (moveEvent: PointerEvent) => {
       const deltaX = moveEvent.clientX - startPointerX;
       const deltaY = moveEvent.clientY - startPointerY;
+      const dist = Math.hypot(deltaX, deltaY);
 
-      if (Math.hypot(deltaX, deltaY) > 6) {
+      if (dist > 6) {
         hasMoved = true;
       }
 
@@ -521,14 +654,28 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         force3D: true
       });
 
+      // Real-time trailing motion response based on drag vector
+      const trailLagX = -deltaX * 0.14;
+      const trailLagY = -deltaY * 0.14;
+      const trailAlpha = Math.min(0.65, dist / 120);
+
+      triggerImageTrail(el, {
+        trailX: trailLagX,
+        trailY: trailLagY,
+        trailScale: 1.03,
+        trailOpacity: trailAlpha,
+        blur: Math.min(4, dist / 30),
+        duration: 0.15
+      });
+
       // Calculate nearest slot
       let bestSlot = 0;
       let minDistance = Infinity;
       for (let s = 0; s < total; s++) {
         const slotPos = makeSlot(s, cardDistance, verticalDistance, total, skewAmount);
-        const dist = Math.hypot(currentX - slotPos.x, currentY - slotPos.y);
-        if (dist < minDistance) {
-          minDistance = dist;
+        const d = Math.hypot(currentX - slotPos.x, currentY - slotPos.y);
+        if (d < minDistance) {
+          minDistance = d;
           bestSlot = s;
         }
       }
@@ -554,7 +701,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       const velocityX = Math.abs(deltaX) / (duration || 1);
       const velocityY = Math.abs(deltaY) / (duration || 1);
 
-      // Reset rotation
+      // Reset rotation & trailing effects
       gsap.set(el, { rotationZ: 0 });
 
       // 1. Check for Quick Tap

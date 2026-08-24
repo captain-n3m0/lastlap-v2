@@ -357,7 +357,7 @@ export default function MeetTheRacers() {
                         </span>
                       </div>
 
-                      {/* Character Visual Showcase */}
+                      {/* Character Visual Showcase with Trailing Motion Ghost Layers */}
                       <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5">
                         {racer.bgImage && (
                           <img
@@ -366,15 +366,46 @@ export default function MeetTheRacers() {
                             className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-40 transition-opacity duration-500"
                           />
                         )}
+
+                        {/* Speed streak lines (active during fast swipe transition) */}
+                        <div
+                          className="card-speed-streak absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_6px,rgba(255,255,255,0.06)_6px,rgba(255,255,255,0.06)_8px)] z-0"
+                        />
+
+                        {/* Trailing Motion Ghost Layer 2 (Outer Echo) */}
+                        <img
+                          src={racer.image}
+                          alt=""
+                          aria-hidden="true"
+                          className="card-trail-ghost-2 absolute z-[5] max-h-[90%] max-w-[90%] object-contain opacity-0 pointer-events-none select-none transition-none transform-gpu"
+                          style={{
+                            filter: 'blur(3px)',
+                            mixBlendMode: 'screen',
+                          }}
+                        />
+
+                        {/* Trailing Motion Ghost Layer 1 (Immediate Warp Trail) */}
+                        <img
+                          src={racer.image}
+                          alt=""
+                          aria-hidden="true"
+                          className="card-trail-ghost-1 absolute z-[8] max-h-[90%] max-w-[90%] object-contain opacity-0 pointer-events-none select-none transition-none transform-gpu"
+                          style={{
+                            filter: 'blur(1.5px)',
+                            mixBlendMode: 'screen',
+                          }}
+                        />
+
+                        {/* Main Crisp Character Image */}
                         <img
                           src={racer.image}
                           alt={racer.name}
-                          className="relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500"
+                          className="card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 transform-gpu"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
 
                         {/* Inspect Badge */}
-                        <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-20">
                           <span>TAP DOSSIER</span>
                           <ChevronRight className="w-3 h-3" />
                         </div>
