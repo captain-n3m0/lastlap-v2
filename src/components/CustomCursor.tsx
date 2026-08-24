@@ -6,7 +6,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export const CustomCursor: React.FC = () => {
-  const cursorRef = useRef<HTMLDivElement | null>(null);
+  const cursorDotRef = useRef<HTMLDivElement | null>(null);
+  const cursorRingRef = useRef<HTMLDivElement | null>(null);
   const [cursorState, setCursorState] = useState<{
     hovered: boolean;
     type: 'default' | 'button' | 'card' | 'link' | 'interactive';
@@ -30,8 +31,10 @@ export const CustomCursor: React.FC = () => {
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
-    let curX = mouseX;
-    let curY = mouseY;
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let dotX = mouseX;
+    let dotY = mouseY;
     let animationFrameId: number;
 
     const onMouseMove = (e: MouseEvent) => {
@@ -42,6 +45,7 @@ export const CustomCursor: React.FC = () => {
 
     const onMouseDown = () => setIsMouseDown(true);
     const onMouseUp = () => setIsMouseDown(false);
+
     const onMouseLeave = () => setIsVisible(false);
     const onMouseEnter = () => setIsVisible(true);
 
@@ -55,7 +59,7 @@ export const CustomCursor: React.FC = () => {
 
       if (interactiveEl) {
         const explicitLabel = interactiveEl.getAttribute('data-cursor-label');
-        const customType = (interactiveEl.getAttribute('data-cursor') as any) || 'interactive';
+        const customType = interactiveEl.getAttribute('data-cursor') as any;
 
         if (interactiveEl.classList.contains('racer-card') || interactiveEl.closest('#racers')) {
           setCursorState({
@@ -78,7 +82,7 @@ export const CustomCursor: React.FC = () => {
         } else {
           setCursorState({
             hovered: true,
-            type: customType,
+            type: customType || 'interactive',
             label: explicitLabel || '',
           });
         }
@@ -98,14 +102,22 @@ export const CustomCursor: React.FC = () => {
     document.addEventListener('mouseenter', onMouseEnter);
     document.addEventListener('mouseover', handleMouseOver);
 
-    // Smooth physics loop
+    // Smooth Spring / Lerp Render Loop
     const render = () => {
-      const ease = 0.25;
-      curX += (mouseX - curX) * ease;
-      curY += (mouseY - curY) * ease;
+      // Direct dot tracking
+      dotX += (mouseX - dotX) * 0.75;
+      dotY += (mouseY - dotY) * 0.75;
 
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+      // Smoothed halo ring lag
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+
+      if (cursorDotRef.current) {
+        cursorDotRef.current.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
+      }
+
+      if (cursorRingRef.current) {
+        cursorRingRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -124,6 +136,7 @@ export const CustomCursor: React.FC = () => {
     };
   }, [isVisible]);
 
+  // If invisible or on mobile, do not render
   return (
     <div
       className={`pointer-events-none fixed inset-0 z-[99999] overflow-hidden transition-opacity duration-300 ${
@@ -131,72 +144,70 @@ export const CustomCursor: React.FC = () => {
       }`}
       aria-hidden="true"
     >
-      {/* Precision Optical Glass Loupe Anchor */}
+      {/* Central Precision Apex Dot */}
       <div
-        ref={cursorRef}
-        className="fixed top-0 left-0 pointer-events-none will-change-transform"
+        ref={cursorDotRef}
+        className="fixed top-0 left-0 -ml-1 -mt-1 w-2 h-2 rounded-full pointer-events-none transition-transform duration-75 ease-out"
+        style={{ willChange: 'transform' }}
       >
         <div
-          className={`relative -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center transition-all duration-200 ease-out ${
+          className={`w-full h-full rounded-full transition-all duration-200 ${
             cursorState.hovered
               ? cursorState.type === 'card'
-                ? 'w-24 h-24 sm:w-28 sm:h-28'
-                : 'w-20 h-20'
+                ? 'bg-amber-400 scale-150 shadow-[0_0_12px_rgba(251,191,36,0.8)]'
+                : 'bg-white scale-125 shadow-[0_0_8px_rgba(255,255,255,0.8)]'
               : isMouseDown
-              ? 'w-12 h-12'
-              : 'w-16 h-16'
+              ? 'bg-amber-400 scale-75'
+              : 'bg-white/90 scale-100'
           }`}
-          style={{
-            // Clean optical glass refraction, enhanced brightness, and high-clarity contrast
-            backdropFilter: cursorState.hovered
-              ? 'brightness(1.25) contrast(1.25) saturate(1.3)'
-              : 'brightness(1.18) contrast(1.18) saturate(1.2)',
-            WebkitBackdropFilter: cursorState.hovered
-              ? 'brightness(1.25) contrast(1.25) saturate(1.3)'
-              : 'brightness(1.18) contrast(1.18) saturate(1.2)',
-          }}
+        />
+      </div>
+
+      {/* Outer Tactical Racing Reticle / Speedometer Ring */}
+      <div
+        ref={cursorRingRef}
+        className="fixed top-0 left-0 pointer-events-none transition-transform duration-100 ease-out"
+        style={{ willChange: 'transform' }}
+      >
+        <div
+          className={`-ml-5 -mt-5 flex items-center justify-center transition-all duration-300 ${
+            cursorState.hovered
+              ? cursorState.type === 'card'
+                ? 'w-16 h-16 -ml-8 -mt-8 rounded-full border border-amber-400/80 bg-amber-500/10 backdrop-blur-[1px] rotate-45 shadow-[0_0_20px_rgba(245,158,11,0.25)]'
+                : 'w-12 h-12 -ml-6 -mt-6 rounded-full border border-white/60 bg-white/5 backdrop-blur-[1px]'
+              : isMouseDown
+              ? 'w-8 h-8 -ml-4 -mt-4 rounded-full border border-amber-400/60 bg-amber-400/10'
+              : 'w-10 h-10 rounded-full border border-white/25 bg-transparent'
+          }`}
         >
-          {/* Convex Lens Curvature Glow & Shading */}
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none transition-all duration-300"
-            style={{
-              background: cursorState.hovered
-                ? 'radial-gradient(circle at 35% 30%, rgba(251, 191, 36, 0.18) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(0, 0, 0, 0.15) 100%)'
-                : 'radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 40%, rgba(0, 0, 0, 0.2) 100%)',
-              boxShadow: cursorState.hovered
-                ? '0 0 24px rgba(251, 191, 36, 0.35), inset 0 0 16px rgba(255, 255, 255, 0.25), inset 0 1px 3px rgba(255, 255, 255, 0.8)'
-                : '0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.6)',
-            }}
-          />
+          {/* Subtle crosshair notches for racing telemetry feel */}
+          {cursorState.hovered && (
+            <>
+              {/* Corner crosshairs */}
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0.5 h-1.5 bg-amber-400/80" />
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-0.5 h-1.5 bg-amber-400/80" />
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-1.5 h-0.5 bg-amber-400/80" />
+              <span className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-1.5 h-0.5 bg-amber-400/80" />
 
-          {/* Precision Glass Bezel Rim */}
-          <div
-            className={`absolute inset-0 rounded-full border pointer-events-none transition-colors duration-200 ${
-              cursorState.hovered
-                ? 'border-amber-400/90'
-                : isMouseDown
-                ? 'border-amber-400'
-                : 'border-white/60'
-            }`}
-          />
+              {/* Context Tag for Racer Cards or Lookbook elements */}
+              {cursorState.label && (
+                <span
+                  className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 bg-zinc-950/90 border border-amber-400/50 rounded text-[9px] font-mono font-bold tracking-widest text-amber-300 shadow-md uppercase"
+                  style={{ transform: cursorState.type === 'card' ? 'rotate(-45deg)' : 'none' }}
+                >
+                  {cursorState.label}
+                </span>
+              )}
+            </>
+          )}
 
-          {/* Top Curved Specular Arc Glint */}
-          <div className="absolute top-1 left-2 right-2 h-[38%] rounded-[50%] bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none opacity-80" />
-
-          {/* Micro Telemetry Pip (Non-Obtrusive) */}
-          <div
-            className={`relative z-10 w-1 h-1 rounded-full pointer-events-none transition-all duration-150 ${
-              cursorState.hovered
-                ? 'bg-amber-300 shadow-[0_0_6px_rgba(251,191,36,1)] scale-125'
-                : 'bg-white/80 scale-100 shadow-[0_0_4px_rgba(255,255,255,0.8)]'
-            }`}
-          />
-
-          {/* Contextual Badge */}
-          {cursorState.hovered && cursorState.label && (
-            <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full bg-zinc-950/95 border border-white/20 backdrop-blur-md text-[9px] font-mono font-bold tracking-widest text-white shadow-xl uppercase flex items-center gap-1 z-30">
-              <span className="w-1 h-1 rounded-full bg-amber-400 animate-pulse" />
-              <span>{cursorState.label}</span>
+          {/* Idle micro reticle marks */}
+          {!cursorState.hovered && (
+            <div className="w-full h-full relative opacity-40">
+              <span className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-[1px] bg-white" />
+              <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-[1px] bg-white" />
+              <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-[1px] h-1 bg-white" />
+              <span className="absolute right-0.5 top-1/2 -translate-y-1/2 w-[1px] h-1 bg-white" />
             </div>
           )}
         </div>
@@ -204,5 +215,4 @@ export const CustomCursor: React.FC = () => {
     </div>
   );
 };
-
 export default CustomCursor;
