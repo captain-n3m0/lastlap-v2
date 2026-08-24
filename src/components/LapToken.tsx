@@ -194,8 +194,8 @@ export default function LapToken() {
                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase">SUPPLY ALLOCATION</span>
                 </div>
                 <div>
-                  <span className="text-2xl font-bold text-white font-mono block">100M FIXED CAP</span>
-                  <span className="text-xs font-mono text-emerald-400 mt-1 block">Deflationary Wager Burns</span>
+                  <span className="text-2xl font-bold text-white font-mono block">COMING SOON</span>
+                  <span className="text-xs font-mono text-white/50 mt-1 block">To Be Announced</span>
                 </div>
               </div>
 
@@ -205,8 +205,8 @@ export default function LapToken() {
                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase">CIRCUIT STAKING</span>
                 </div>
                 <div>
-                  <span className="text-2xl font-bold text-white font-mono block">REAL-YIELD APY</span>
-                  <span className="text-xs font-mono text-white/60 mt-1 block">Racer Staking Dividends</span>
+                  <span className="text-2xl font-bold text-white font-mono block">COMING SOON</span>
+                  <span className="text-xs font-mono text-white/50 mt-1 block">To Be Announced</span>
                 </div>
               </div>
 
@@ -216,8 +216,8 @@ export default function LapToken() {
                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase">TRANSACTIONS</span>
                 </div>
                 <div>
-                  <span className="text-2xl font-bold text-white font-mono block">0% TAX MODEL</span>
-                  <span className="text-xs font-mono text-white/60 mt-1 block">Zero Friction Transfers</span>
+                  <span className="text-2xl font-bold text-white font-mono block">COMING SOON</span>
+                  <span className="text-xs font-mono text-white/50 mt-1 block">To Be Announced</span>
                 </div>
               </div>
 

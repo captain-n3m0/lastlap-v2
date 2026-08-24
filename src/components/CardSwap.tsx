@@ -41,8 +41,10 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...rest }, ref) => (
   <div
     ref={ref}
+    data-cursor="card"
+    data-cursor-label="DRAG / INSPECT"
     {...rest}
-    className={`absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing transition-shadow duration-300 ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
+    className={`racer-card absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing transition-shadow duration-300 ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
   />
 ));
 

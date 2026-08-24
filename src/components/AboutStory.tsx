@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Compass, Flame, Shield, Globe, Users, Cpu, Award, Sparkles, BookOpen } from 'lucide-react';
+import { Compass, Flame, Shield, Globe, Users, Gamepad2, Award, Sparkles, BookOpen } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -197,12 +197,19 @@ export default function AboutStory() {
 
             <div ref={narrativeRef} className="space-y-6 text-base sm:text-lg font-sans text-white/85 leading-relaxed font-normal">
               <p className="first-letter:text-5xl first-letter:font-black first-letter:text-white first-letter:float-left first-letter:mr-3 first-letter:leading-none">
-                LastLap is a high-octane motorsport ecosystem containing a genesis catalog of <strong className="text-white font-semibold">2,525 hand-drawn desert racers</strong>. Born at the intersection of raw underground street culture and sovereign onchain architecture.
+                LastLap is a racing-inspired Web3 ecosystem launching on the Robinhood Network, built around a collection of unique rider NFTs, strong community culture, and digital ownership.
               </p>
 
               <p className="text-white/75 leading-relaxed">
-                We merge genuine desert thrill, mechanical lore, passionate pilot syndicates, and cryptographically verified racing. Every racer is an immutable key unlocking real-time provably fair heats, garage tuning mechanics, and seasonal tournament prize pools.
+                The LastLap NFT collection brings together racing, street culture, adventure, and identity through distinctive rider characters designed to represent the community. As the ecosystem grows, holders will be able to take part in future experiences, utilities, rewards, collaborations, and community-driven activities.
               </p>
+
+              <div className="pt-2">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>LastLap NFTs — Coming Soon on Robinhood</span>
+                </div>
+              </div>
             </div>
 
             {/* Robinhood Affiliation Callout Box */}
@@ -242,14 +249,14 @@ export default function AboutStory() {
               </div>
 
               <div className="velocity-skew p-6 rounded-2xl bg-zinc-950">
-                <Cpu className="w-6 h-6 text-white mb-3" />
+                <Gamepad2 className="w-6 h-6 text-white mb-3" />
                 <h5
                   className="text-lg font-black text-white uppercase tracking-wide mb-1"
                   style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                 >
-                  PROVABLY FAIR
+                  ARCADE GAMES
                 </h5>
-                <p className="text-xs font-mono text-white/60">Verifiable cryptographic race seeds.</p>
+                <p className="text-xs font-mono text-white/60">Verifiable cryptographic arcade games.</p>
               </div>
 
               <div className="velocity-skew p-6 rounded-2xl bg-zinc-950">

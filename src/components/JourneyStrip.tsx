@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Layers, Flame, Trophy, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Layers, Gamepad2, Trophy, ArrowUpRight, Sparkles } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -133,8 +133,8 @@ export default function JourneyStrip() {
     {
       ref: card2Ref,
       num: '02',
-      title: 'RACE',
-      icon: Flame,
+      title: 'ARCADE',
+      icon: Gamepad2,
       category: 'ONCHAIN TRACKS',
       tagColor: 'bg-orange-500/10 text-orange-300 border-orange-500/30',
       description: 'Strap in and enter the proving grounds. Provably fair racing mechanics simulate terrain coefficient, turbo timing, and fuel strategy.',
@@ -179,7 +179,7 @@ export default function JourneyStrip() {
                 COLLECT.
                 <br />
                 <span className="text-stroke-white text-transparent hover:text-white transition-colors duration-300">
-                  RACE.
+                  ARCADE.
                 </span>{' '}
                 EARN.
               </h2>

@@ -156,7 +156,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-xs font-mono text-white/60 leading-relaxed">
-              2,525 genesis desert racers battling across provably fair circuits. Built on Ethereum for the global Web3 motorsports collective.
+              2,525 genesis desert racers battling across provably fair circuits. Built on Robinhood Network for the global Web3 motorsports collective.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
@@ -240,7 +240,7 @@ export default function Footer() {
               <div className="space-y-2 text-xs font-mono text-white/60">
                 <p>ISSUE: 01 // VOL. 2525</p>
                 <p>SECTOR: 34°12&apos;N 115°45&apos;W</p>
-                <p>NETWORK: ETHEREUM MAINNET</p>
+                <p>NETWORK: ROBINHOOD MAINNET</p>
               </div>
             </div>
 

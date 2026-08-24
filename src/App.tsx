@@ -17,11 +17,15 @@ import AboutStory from './components/AboutStory';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import NotFound from './components/NotFound';
+import CustomCursor from './components/CustomCursor';
 import { useScrollVelocitySkew } from './hooks/useScrollVelocitySkew';
 
 function LandingPage() {
   return (
     <div className="relative w-full min-h-screen bg-[#060606] text-white font-sans selection:bg-white selection:text-black">
+      {/* Custom Racing Reticle Cursor */}
+      <CustomCursor />
+
       {/* Navigation Header */}
       <Navbar />
 
