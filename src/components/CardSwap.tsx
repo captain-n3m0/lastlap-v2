@@ -62,8 +62,6 @@ interface Slot {
 
 // Standard isometric stack position with clustered deep stack
 const makeSlot = (i: number, distX: number, distY: number, total: number, skew: number): Slot => {
-  // Visible echelon: cards 0, 1, 2, 3 have progressive steps.
-  // Beyond index 3, cluster them tightly behind index 3 and fade out deeper cards so it doesn't create an overflowing fan.
   const effectiveStep = Math.min(i, 3) + Math.max(0, i - 3) * 0.12;
   const opacity = i > 4 ? 0 : i === 4 ? 0.35 : 1;
   return {
@@ -132,19 +130,20 @@ const placeNow = (el: HTMLElement, slot: Slot) =>
 
 export interface CardSwapRef {
   swap: () => void;
+  swapPrev: () => void;
   resetDeck: () => void;
 }
 
 export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
-  width = 500,
-  height = 400,
-  cardDistance = 60,
-  verticalDistance = 70,
+  width = 340,
+  height = 460,
+  cardDistance = 28,
+  verticalDistance = 22,
   delay = 4500,
   pauseOnHover = true,
   onCardClick,
   onActiveChange,
-  skewAmount = 6,
+  skewAmount = 5,
   easing = 'elastic',
   children
 }, forwardedRef) => {
@@ -152,9 +151,9 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     easing === 'elastic'
       ? {
           ease: 'elastic.out(0.6,0.9)',
-          durDrop: 1.8,
-          durMove: 1.8,
-          durReturn: 1.8,
+          durDrop: 1.6,
+          durMove: 1.6,
+          durReturn: 1.6,
           promoteOverlap: 0.85,
           returnDelay: 0.05
         }
@@ -180,11 +179,11 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   const onActiveChangeRef = useRef(onActiveChange);
   onActiveChangeRef.current = onActiveChange;
 
-  // Active hover indicator slot state for rendering a subtle docking laser guide
+  // Active hover indicator slot state for rendering docking guide
   const [dockingSlotIndex, setDockingSlotIndex] = useState<number | null>(null);
 
   // Animate all cards to their current ordered standard slots
-  const renderOrder = useCallback((animate = true, duration = 0.7) => {
+  const renderOrder = useCallback((animate = true, duration = 0.6) => {
     const total = order.current.length;
     order.current.forEach((cardIndex, slotIndex) => {
       const el = refs[cardIndex]?.current;
@@ -201,6 +200,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           scale: slot.scale ?? 1,
           opacity: slot.opacity ?? 1,
           zIndex: slot.zIndex,
+          rotationZ: 0,
           duration,
           ease: 'power3.out',
           overwrite: 'auto'
@@ -215,8 +215,89 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     }
   }, [cardDistance, verticalDistance, skewAmount, refs]);
 
-  const triggerSwap = useCallback(() => {
+  // Advance to next card (front card drops and moves to back)
+  const triggerSwap = useCallback((direction: 'next' | 'prev' = 'next') => {
     if (order.current.length < 2 || isSwapping.current || isDragging.current) return;
+    
+    if (direction === 'prev') {
+      // Bring back card to front
+      const lastIndex = order.current[order.current.length - 1];
+      const elLast = refs[lastIndex]?.current;
+      if (!elLast) return;
+
+      isSwapping.current = true;
+      const total = refs.length;
+      const tl = gsap.timeline({
+        onComplete: () => {
+          isSwapping.current = false;
+        }
+      });
+      tlRef.current = tl;
+
+      // Bring last card up and to front
+      tl.set(elLast, { zIndex: total + 10 });
+      tl.to(elLast, {
+        x: -80,
+        y: '+=120',
+        z: 150,
+        scale: 1.05,
+        rotationZ: -6,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+
+      // Shift other cards back
+      const remaining = order.current.slice(0, -1);
+      remaining.forEach((idx, i) => {
+        const el = refs[idx]?.current;
+        if (!el) return;
+        const slot = makeSlot(i + 1, cardDistance, verticalDistance, total, skewAmount);
+        tl.to(
+          el,
+          {
+            x: slot.x,
+            y: slot.y,
+            z: slot.z,
+            skewY: slot.skewY,
+            scale: slot.scale ?? 1,
+            opacity: slot.opacity ?? 1,
+            zIndex: slot.zIndex,
+            duration: 0.5,
+            ease: 'power2.out'
+          },
+          '0.1'
+        );
+      });
+
+      const frontSlot = makeSlot(0, cardDistance, verticalDistance, total, skewAmount);
+      tl.to(
+        elLast,
+        {
+          x: frontSlot.x,
+          y: frontSlot.y,
+          z: frontSlot.z,
+          skewY: frontSlot.skewY,
+          scale: frontSlot.scale ?? 1,
+          opacity: frontSlot.opacity ?? 1,
+          rotationZ: 0,
+          zIndex: total,
+          duration: 0.6,
+          ease: 'power3.out'
+        },
+        '-=0.2'
+      );
+
+      tl.call(() => {
+        order.current = [lastIndex, ...remaining];
+        if (order.current[0] !== undefined) {
+          onActiveChangeRef.current?.(order.current[0]);
+        }
+      });
+
+      return;
+    }
+
+    // Default 'next' flow
     const [front, ...rest] = order.current;
     const elFront = refs[front]?.current;
     if (!elFront) return;
@@ -230,7 +311,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     tlRef.current = tl;
 
     tl.to(elFront, {
-      y: '+=500',
+      y: '+=450',
       duration: config.durDrop,
       ease: config.ease
     });
@@ -253,7 +334,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           duration: config.durMove,
           ease: config.ease
         },
-        `promote+=${i * 0.12}`
+        `promote+=${i * 0.1}`
       );
     });
 
@@ -290,6 +371,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     });
   }, [cardDistance, verticalDistance, skewAmount, config, refs]);
 
+  const triggerSwapPrev = useCallback(() => {
+    triggerSwap('prev');
+  }, [triggerSwap]);
+
   const resetDeck = useCallback(() => {
     tlRef.current?.kill();
     isSwapping.current = false;
@@ -299,15 +384,16 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   }, [refs.length, renderOrder]);
 
   useImperativeHandle(forwardedRef, () => ({
-    swap: triggerSwap,
+    swap: () => triggerSwap('next'),
+    swapPrev: triggerSwapPrev,
     resetDeck
-  }), [triggerSwap, resetDeck]);
+  }), [triggerSwap, triggerSwapPrev, resetDeck]);
 
   // Restart auto timer
   const restartTimer = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (delay > 0 && refs.length >= 2) {
-      intervalRef.current = window.setInterval(triggerSwap, delay);
+      intervalRef.current = window.setInterval(() => triggerSwap('next'), delay);
     }
   }, [delay, refs.length, triggerSwap]);
 
@@ -354,42 +440,41 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     };
   }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs, triggerSwap, restartTimer]);
 
-  // Handle Dragging: Hold-to-shrink + Magnetic Slot Cleave & Elevator Insertion
+  // Handle Drag & Touch Swipe Gestures
   const handlePointerDown = (cardIndex: number, e: React.PointerEvent<HTMLDivElement>) => {
-    // Only left click / primary touch
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
     const el = refs[cardIndex]?.current;
     if (!el || isSwapping.current) return;
 
-    // Pause timer and animations
+    // Pause auto timer
     tlRef.current?.kill();
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     isDragging.current = true;
     const startPointerX = e.clientX;
     const startPointerY = e.clientY;
+    const startTime = Date.now();
     let hasMoved = false;
 
     const total = order.current.length;
     const initialSlotIndex = order.current.indexOf(cardIndex);
     const initialSlot = makeSlot(initialSlotIndex >= 0 ? initialSlotIndex : 0, cardDistance, verticalDistance, total, skewAmount);
 
-    // 1. Shrink held card into high-precision holographic mini-card (scale: 0.76, levitating)
+    // Initial scale for held card
     gsap.to(el, {
-      scale: 0.76,
+      scale: 0.88,
       skewY: 0,
       zIndex: 9999,
       boxShadow: '0 25px 50px -5px rgba(0,0,0,0.9), 0 0 35px rgba(255,255,255,0.2)',
-      duration: 0.22,
-      ease: 'back.out(1.5)',
+      duration: 0.18,
+      ease: 'power2.out',
       overwrite: 'auto'
     });
 
     let currentTargetSlot = initialSlotIndex;
     setDockingSlotIndex(currentTargetSlot);
 
-    // 2. Animate deck split (cleaving the stack at target insertion point)
     const animateSplit = (targetSlot: number) => {
       const remainingOrder = order.current.filter((idx) => idx !== cardIndex);
       remainingOrder.forEach((idx, sIndex) => {
@@ -403,30 +488,26 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           scale: magSlot.scale,
           skewY: magSlot.skewY,
           zIndex: magSlot.zIndex,
-          duration: 0.35,
+          duration: 0.3,
           ease: 'power3.out',
           overwrite: 'auto'
         });
       });
     };
 
-    // Open initial magnetic split
     animateSplit(currentTargetSlot);
 
     const onPointerMove = (moveEvent: PointerEvent) => {
       const deltaX = moveEvent.clientX - startPointerX;
       const deltaY = moveEvent.clientY - startPointerY;
 
-      if (Math.hypot(deltaX, deltaY) > 5) {
+      if (Math.hypot(deltaX, deltaY) > 6) {
         hasMoved = true;
       }
 
-      // Track cursor position directly
       const currentX = initialSlot.x + deltaX;
       const currentY = initialSlot.y + deltaY;
-
-      // Slight natural tilt based on horizontal drag velocity/direction
-      const dragTilt = Math.max(-12, Math.min(12, deltaX * 0.08));
+      const dragTilt = Math.max(-14, Math.min(14, deltaX * 0.09));
 
       gsap.set(el, {
         x: currentX,
@@ -434,13 +515,13 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         z: 220,
         xPercent: -50,
         yPercent: -50,
-        scale: 0.76,
+        scale: 0.86,
         rotationZ: dragTilt,
         skewY: 0,
         force3D: true
       });
 
-      // Calculate nearest insertion slot along the stack axis
+      // Calculate nearest slot
       let bestSlot = 0;
       let minDistance = Infinity;
       for (let s = 0; s < total; s++) {
@@ -452,7 +533,6 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         }
       }
 
-      // If the target slot changed, shift the magnetic cleave gap smoothly
       if (bestSlot !== currentTargetSlot) {
         currentTargetSlot = bestSlot;
         setDockingSlotIndex(bestSlot);
@@ -468,23 +548,47 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       isDragging.current = false;
       setDockingSlotIndex(null);
 
-      // Reset rotation tilt
+      const deltaX = upEvent.clientX - startPointerX;
+      const deltaY = upEvent.clientY - startPointerY;
+      const duration = Date.now() - startTime;
+      const velocityX = Math.abs(deltaX) / (duration || 1);
+      const velocityY = Math.abs(deltaY) / (duration || 1);
+
+      // Reset rotation
       gsap.set(el, { rotationZ: 0 });
 
-      if (!hasMoved) {
-        // Quick click without drag: restore deck and trigger click action
+      // 1. Check for Quick Tap
+      if (!hasMoved || (Math.hypot(deltaX, deltaY) < 10 && duration < 300)) {
         renderOrder(true, 0.4);
         onCardClick?.(cardIndex);
         restartTimer();
         return;
       }
 
-      // Reorder cards into selected target position
+      // 2. Check for Swipe Gestures (Horizontal or Down flick)
+      const isSwipeLeft = deltaX < -50 || (deltaX < -30 && velocityX > 0.35);
+      const isSwipeRight = deltaX > 50 || (deltaX > 30 && velocityX > 0.35);
+      const isSwipeDown = deltaY > 60 || (deltaY > 35 && velocityY > 0.4);
+
+      if (isSwipeLeft || isSwipeDown) {
+        // Swipe to next card
+        renderOrder(false);
+        triggerSwap('next');
+        restartTimer();
+        return;
+      } else if (isSwipeRight) {
+        // Swipe to previous card
+        renderOrder(false);
+        triggerSwap('prev');
+        restartTimer();
+        return;
+      }
+
+      // 3. Fallback: Drag-and-drop elevator reordering
       const newOrder = order.current.filter((idx) => idx !== cardIndex);
       newOrder.splice(currentTargetSlot, 0, cardIndex);
       order.current = newOrder;
 
-      // Smoothly snap held card back to full scale (1.0) and seal the deck
       renderOrder(true, 0.6);
       restartTimer();
     };
@@ -511,7 +615,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   return (
     <div
       ref={container}
-      className="relative [perspective:1400px] transform-gpu select-none"
+      className="relative [perspective:1400px] transform-gpu select-none touch-pan-y"
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { RACERS } from '../data/mockData';
 import { Racer } from '../types';
-import { X, Eye, Sparkles, MoveRight, RotateCw, Gauge, Zap, Shield, Compass, ChevronRight } from 'lucide-react';
+import { X, Eye, ChevronLeft, ChevronRight, RotateCw, Gauge, Zap, Shield, Compass, Hand, Sparkles } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CardSwap, Card, CardSwapRef } from './CardSwap';
@@ -16,11 +16,23 @@ gsap.registerPlugin(ScrollTrigger);
 export default function MeetTheRacers() {
   const [selectedRacer, setSelectedRacer] = useState<Racer | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
   const cardSwapRef = useRef<CardSwapRef>(null);
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
+
+  // Track window resizing for responsive 3D card deck scaling
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleActiveChange = useCallback((idx: number) => {
     setActiveCardIndex(idx);
@@ -28,6 +40,45 @@ export default function MeetTheRacers() {
 
   const racersList = RACERS;
   const activeRacer = racersList[activeCardIndex] || racersList[0];
+
+  // Dynamically calculate proportional 3D dimensions based on viewport
+  const cardDimensions = React.useMemo(() => {
+    if (viewportWidth < 400) {
+      const w = Math.max(260, viewportWidth - 60);
+      return {
+        width: w,
+        height: Math.round(w * 1.35),
+        cardDistance: 14,
+        verticalDistance: 12,
+        skewAmount: 2.5
+      };
+    } else if (viewportWidth < 640) {
+      const w = Math.min(300, viewportWidth - 64);
+      return {
+        width: w,
+        height: Math.round(w * 1.35),
+        cardDistance: 18,
+        verticalDistance: 15,
+        skewAmount: 3.5
+      };
+    } else if (viewportWidth < 1024) {
+      return {
+        width: 320,
+        height: 430,
+        cardDistance: 24,
+        verticalDistance: 18,
+        skewAmount: 4
+      };
+    } else {
+      return {
+        width: 340,
+        height: 460,
+        cardDistance: 28,
+        verticalDistance: 22,
+        skewAmount: 5
+      };
+    }
+  }, [viewportWidth]);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -76,7 +127,7 @@ export default function MeetTheRacers() {
     <section
       ref={sectionRef}
       id="racers"
-      className="py-28 sm:py-36 bg-[#070707] relative border-b border-white/10 text-white overflow-hidden select-none"
+      className="py-24 sm:py-36 bg-[#070707] relative border-b border-white/10 text-white overflow-hidden select-none"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-b from-white/5 via-white/[0.02] to-transparent blur-[140px] pointer-events-none -z-0" />
@@ -84,7 +135,7 @@ export default function MeetTheRacers() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
         {/* Section Header */}
-        <div ref={headerRef} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 pb-8 border-b border-white/10">
+        <div ref={headerRef} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16 pb-6 sm:pb-8 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -98,17 +149,23 @@ export default function MeetTheRacers() {
             >
               MEET THE RACERS
             </h2>
-            <p className="text-white/60 font-mono text-sm sm:text-base max-w-xl mt-3">
-              Perspective dossier showcase. Swap through 2,525 provably fair pilots, custom cyber rigs, and high-velocity telemetry.
+            <p className="text-white/60 font-mono text-xs sm:text-sm md:text-base max-w-xl mt-3">
+              Perspective dossier showcase. Swipe, flick, or drag through 2,525 provably fair pilots, custom cyber rigs, and high-velocity telemetry.
             </p>
+          </div>
+
+          {/* Gesture Guide Pill */}
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-white/70">
+            <Hand className="w-3.5 h-3.5 text-amber-400" />
+            <span>SWIPE OR DRAG TO REORDER</span>
           </div>
         </div>
 
         {/* Showcase Grid: Left Dossier Stats + Center CardSwap Deck */}
-        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[580px]">
+        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Active Racer Telemetry HUD */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-            <div className="p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden">
+          <div className="lg:col-span-5 flex flex-col justify-between space-y-6 order-2 lg:order-1">
+            <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden">
               {/* Top Accent bar */}
               <div
                 className="absolute top-0 left-0 right-0 h-1.5 transition-colors duration-500"
@@ -118,6 +175,9 @@ export default function MeetTheRacers() {
               <div className="flex items-center justify-between mb-4">
                 <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-mono font-bold text-white tracking-widest">
                   SERIAL {activeRacer.serial}
+                </span>
+                <span className="text-[10px] font-mono text-white/40 uppercase">
+                  ACTIVE DOSSIER
                 </span>
               </div>
 
@@ -135,7 +195,7 @@ export default function MeetTheRacers() {
                     <Gauge className="w-3.5 h-3.5 text-white/70" />
                     <span>TOP SPEED</span>
                   </div>
-                  <div className="text-lg font-bold font-mono text-white">
+                  <div className="text-base sm:text-lg font-bold font-mono text-white">
                     {activeRacer.stats.speed} <span className="text-xs font-normal text-white/50">MPH</span>
                   </div>
                 </div>
@@ -145,7 +205,7 @@ export default function MeetTheRacers() {
                     <Zap className="w-3.5 h-3.5 text-white/70" />
                     <span>ACCEL</span>
                   </div>
-                  <div className="text-lg font-bold font-mono text-white">
+                  <div className="text-base sm:text-lg font-bold font-mono text-white">
                     {activeRacer.stats.acceleration}<span className="text-xs font-normal text-white/50">/100</span>
                   </div>
                 </div>
@@ -155,7 +215,7 @@ export default function MeetTheRacers() {
                     <Shield className="w-3.5 h-3.5 text-white/70" />
                     <span>GRIT</span>
                   </div>
-                  <div className="text-lg font-bold font-mono text-white">
+                  <div className="text-base sm:text-lg font-bold font-mono text-white">
                     {activeRacer.stats.grit}<span className="text-xs font-normal text-white/50">/100</span>
                   </div>
                 </div>
@@ -165,7 +225,7 @@ export default function MeetTheRacers() {
                     <Compass className="w-3.5 h-3.5 text-white/70" />
                     <span>HANDLING</span>
                   </div>
-                  <div className="text-lg font-bold font-mono text-white">
+                  <div className="text-base sm:text-lg font-bold font-mono text-white">
                     {activeRacer.stats.handling}<span className="text-xs font-normal text-white/50">/100</span>
                   </div>
                 </div>
@@ -176,7 +236,7 @@ export default function MeetTheRacers() {
                 <button
                   type="button"
                   onClick={() => setSelectedRacer(activeRacer)}
-                  className="flex-1 py-3 px-5 rounded-xl bg-white text-black font-mono font-bold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  className="flex-1 min-w-[140px] py-3 px-5 rounded-xl bg-white text-black font-mono font-bold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                 >
                   <Eye className="w-4 h-4" />
                   <span>INSPECT DOSSIER</span>
@@ -184,12 +244,23 @@ export default function MeetTheRacers() {
 
                 <button
                   type="button"
-                  onClick={() => cardSwapRef.current?.swap()}
-                  className="py-3 px-4 rounded-xl bg-zinc-900 border border-white/15 text-white font-mono text-xs hover:bg-white/10 transition-all flex items-center gap-2 cursor-pointer"
-                  title="Next Card"
+                  onClick={() => cardSwapRef.current?.swapPrev()}
+                  className="py-3 px-3 rounded-xl bg-zinc-900 border border-white/15 text-white font-mono text-xs hover:bg-white/10 transition-all flex items-center gap-1 cursor-pointer"
+                  title="Previous Card"
+                  aria-label="Previous racer card"
                 >
-                  <RotateCw className="w-4 h-4" />
-                  <span className="hidden sm:inline">SWAP</span>
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => cardSwapRef.current?.swap()}
+                  className="py-3 px-3.5 rounded-xl bg-zinc-900 border border-white/15 text-white font-mono text-xs hover:bg-white/10 transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Next Card"
+                  aria-label="Next racer card"
+                >
+                  <span className="text-xs font-bold font-mono">NEXT</span>
+                  <ChevronRight className="w-4 h-4" />
                 </button>
 
                 <button
@@ -198,7 +269,8 @@ export default function MeetTheRacers() {
                   className="py-3 px-3.5 rounded-xl bg-zinc-900 border border-white/15 text-white/70 font-mono text-xs hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5 cursor-pointer"
                   title="Reset Original Order"
                 >
-                  <span>RESET</span>
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">RESET</span>
                 </button>
               </div>
             </div>
@@ -206,18 +278,25 @@ export default function MeetTheRacers() {
             {/* Active Card Indicator Strip */}
             <div className="flex items-center justify-between px-3 text-xs font-mono text-white/50">
               <div className="flex items-center gap-2">
-                <span>ACTIVE DECK:</span>
+                <span>PILOT:</span>
                 <span className="text-white font-bold">
                   {String(activeCardIndex + 1).padStart(2, '0')} / {String(racersList.length).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] text-white/30 hidden sm:inline">• DRAG CARD TO REORDER</span>
               </div>
               <div className="flex items-center gap-1.5">
                 {racersList.map((_, i) => (
-                  <span
+                  <button
                     key={i}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      activeCardIndex === i ? 'w-5 bg-white' : 'w-1.5 bg-white/20'
+                    type="button"
+                    onClick={() => {
+                      const diff = (i - activeCardIndex + racersList.length) % racersList.length;
+                      for (let step = 0; step < diff; step++) {
+                        setTimeout(() => cardSwapRef.current?.swap(), step * 180);
+                      }
+                    }}
+                    aria-label={`Jump to racer ${i + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      activeCardIndex === i ? 'w-6 bg-white' : 'w-2 bg-white/20 hover:bg-white/40'
                     }`}
                   />
                 ))}
@@ -226,17 +305,29 @@ export default function MeetTheRacers() {
           </div>
 
           {/* Right Column: 3D Perspective CardSwap Animation Container */}
-          <div className="lg:col-span-7 flex items-center justify-center relative py-8 px-4 overflow-visible">
-            <div className="relative w-full max-w-[440px] sm:max-w-[480px] h-[480px] sm:h-[520px] flex items-center justify-center">
+          <div className="lg:col-span-7 flex flex-col items-center justify-center relative py-4 sm:py-8 px-2 sm:px-4 overflow-visible order-1 lg:order-2">
+            {/* Mobile Touch Gesture Pill */}
+            <div className="flex sm:hidden items-center gap-2 px-3 py-1 mb-4 rounded-full bg-white/10 border border-white/20 text-[10px] font-mono text-white/80 animate-pulse">
+              <Hand className="w-3 h-3 text-amber-400" />
+              <span>SWIPE LEFT / RIGHT TO CYCLE</span>
+            </div>
+
+            <div
+              className="relative flex items-center justify-center"
+              style={{
+                width: cardDimensions.width + 50,
+                height: cardDimensions.height + 40
+              }}
+            >
               <CardSwap
                 ref={cardSwapRef}
-                width={340}
-                height={460}
-                cardDistance={30}
-                verticalDistance={24}
-                delay={4000}
+                width={cardDimensions.width}
+                height={cardDimensions.height}
+                cardDistance={cardDimensions.cardDistance}
+                verticalDistance={cardDimensions.verticalDistance}
+                delay={4500}
                 pauseOnHover={true}
-                skewAmount={4}
+                skewAmount={cardDimensions.skewAmount}
                 easing="elastic"
                 onActiveChange={handleActiveChange}
                 onCardClick={(idx) => {
@@ -253,7 +344,7 @@ export default function MeetTheRacers() {
                       boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 30px -5px ${racer.color}20`,
                     }}
                   >
-                    <div className="relative w-full h-full flex flex-col justify-between p-6">
+                    <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-6">
                       {/* Top Header Row on Card */}
                       <div className="flex items-center justify-between z-10">
                         <div className="flex items-center gap-2">
@@ -261,10 +352,13 @@ export default function MeetTheRacers() {
                             {racer.serial}
                           </span>
                         </div>
+                        <span className="text-[10px] font-mono text-white/40 uppercase">
+                          PILOT // RIG
+                        </span>
                       </div>
 
                       {/* Character Visual Showcase */}
-                      <div className="relative my-auto w-full h-[250px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5">
+                      <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5">
                         {racer.bgImage && (
                           <img
                             src={racer.bgImage}
@@ -279,9 +373,9 @@ export default function MeetTheRacers() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
 
-                        {/* Hover Prompt Badge */}
-                        <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                          <span>INSPECT</span>
+                        {/* Inspect Badge */}
+                        <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                          <span>TAP DOSSIER</span>
                           <ChevronRight className="w-3 h-3" />
                         </div>
                       </div>
@@ -291,7 +385,7 @@ export default function MeetTheRacers() {
                         <div className="flex items-center justify-between">
                           <div>
                             <h4
-                              className="text-xl font-black uppercase text-white tracking-wide"
+                              className="text-lg sm:text-xl font-black uppercase text-white tracking-wide"
                               style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                             >
                               SERIAL {racer.serial}
@@ -299,7 +393,7 @@ export default function MeetTheRacers() {
                           </div>
                           <div className="text-right">
                             <span className="text-[9px] font-mono text-white/40 block uppercase">SPEED</span>
-                            <span className="text-sm font-bold font-mono text-white">
+                            <span className="text-xs sm:text-sm font-bold font-mono text-white">
                               {racer.stats.speed} <span className="text-[10px] text-white/50">MPH</span>
                             </span>
                           </div>
@@ -318,22 +412,22 @@ export default function MeetTheRacers() {
       {selectedRacer && (
         <div
           id="racer-profile-modal"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
           onClick={() => setSelectedRacer(null)}
         >
           <div
-            className="relative w-full max-w-3xl rounded-3xl bg-zinc-950 border border-white/20 overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-3xl rounded-3xl bg-zinc-950 border border-white/20 overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div
-              className="p-6 flex items-center justify-between border-b border-white/10 text-white"
+              className="p-4 sm:p-6 flex items-center justify-between border-b border-white/10 text-white"
               style={{ backgroundColor: selectedRacer.panelColor }}
             >
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
                 <div>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest opacity-80 block">
+                  <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-widest opacity-80 block">
                     SECTOR ARCHIVE // DOSSIER
                   </span>
                   <h3
@@ -348,17 +442,18 @@ export default function MeetTheRacers() {
               <button
                 type="button"
                 onClick={() => setSelectedRacer(null)}
-                className="w-10 h-10 rounded-full bg-black/40 border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/40 border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer"
+                aria-label="Close dossier"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 sm:p-8 space-y-8">
+            <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
               {/* Visual Showcase */}
               <div
-                className="h-64 sm:h-72 w-full rounded-2xl flex items-end justify-center relative overflow-hidden border border-white/10"
+                className="h-52 sm:h-72 w-full rounded-2xl flex items-end justify-center relative overflow-hidden border border-white/10"
                 style={{ backgroundColor: selectedRacer.color }}
               >
                 {selectedRacer.bgImage && (
@@ -380,28 +475,28 @@ export default function MeetTheRacers() {
                 <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-white/50 block mb-3">
                   CIRCUIT TELEMETRY
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-white/10">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="p-3 sm:p-4 rounded-xl bg-zinc-900 border border-white/10">
                     <span className="text-[10px] font-mono text-white/50 block uppercase">TOP SPEED</span>
-                    <span className="text-xl font-bold font-mono text-white">
+                    <span className="text-lg sm:text-xl font-bold font-mono text-white">
                       {selectedRacer.stats.speed} MPH
                     </span>
                   </div>
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-white/10">
+                  <div className="p-3 sm:p-4 rounded-xl bg-zinc-900 border border-white/10">
                     <span className="text-[10px] font-mono text-white/50 block uppercase">ACCELERATION</span>
-                    <span className="text-xl font-bold font-mono text-white">
+                    <span className="text-lg sm:text-xl font-bold font-mono text-white">
                       {selectedRacer.stats.acceleration}/100
                     </span>
                   </div>
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-white/10">
+                  <div className="p-3 sm:p-4 rounded-xl bg-zinc-900 border border-white/10">
                     <span className="text-[10px] font-mono text-white/50 block uppercase">GRIT</span>
-                    <span className="text-xl font-bold font-mono text-white">
+                    <span className="text-lg sm:text-xl font-bold font-mono text-white">
                       {selectedRacer.stats.grit}/100
                     </span>
                   </div>
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-white/10">
+                  <div className="p-3 sm:p-4 rounded-xl bg-zinc-900 border border-white/10">
                     <span className="text-[10px] font-mono text-white/50 block uppercase">HANDLING</span>
-                    <span className="text-xl font-bold font-mono text-white">
+                    <span className="text-lg sm:text-xl font-bold font-mono text-white">
                       {selectedRacer.stats.handling}/100
                     </span>
                   </div>
