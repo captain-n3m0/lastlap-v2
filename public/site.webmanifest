@@ -1,0 +1,17 @@
+{
+  "name": "LastLap // Desert Motorsports Web3 Ecosystem",
+  "short_name": "LastLap",
+  "description": "LastLap is a racing-inspired Web3 ecosystem on Robinhood Network, featuring 2,525 genesis rider NFTs and onchain motorsport arcade gaming.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060606",
+  "theme_color": "#060606",
+  "icons": [
+    {
+      "src": "https://cdn.lastlap.fun/lastlap/Br4ted.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
