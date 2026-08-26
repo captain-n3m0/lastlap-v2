@@ -278,12 +278,12 @@ export default function AboutStory() {
               {/* Image plate */}
               <div className="w-full aspect-[4/5] rounded-2xl bg-black relative overflow-hidden flex items-center justify-center p-4">
                 <img
-                  src="https://cdn.lastlap.fun/b72dc863-6a64-46d8-a3a7-ec97a5ff01bc.png"
+                  src="https://cdn.lastlap.live/b72dc863-6a64-46d8-a3a7-ec97a5ff01bc.png"
                   alt="Desert backdrop"
                   className="absolute inset-0 w-full h-full object-cover opacity-45"
                 />
                 <img
-                  src="https://cdn.lastlap.fun/Adobe%20Express%20-%20file%20(1).png"
+                  src="https://cdn.lastlap.live/Adobe%20Express%20-%20file%20(1).png"
                   alt="LastLap Racer"
                   className="relative z-10 w-4/5 h-4/5 object-contain object-bottom hover:scale-105 transition-transform duration-500"
                 />

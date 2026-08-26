@@ -16,23 +16,23 @@ interface ImageItem {
 
 const IMAGES: ImageItem[] = [
   { 
-    src: 'https://cdn.lastlap.fun/Adobe%20Express%20-%20file%20(1).png', 
+    src: 'https://cdn.lastlap.live/Adobe%20Express%20-%20file%20(1).png', 
     bg: '#A94E34', 
-    bgImage: 'https://cdn.lastlap.fun/b72dc863-6a64-46d8-a3a7-ec97a5ff01bc.png',
+    bgImage: 'https://cdn.lastlap.live/b72dc863-6a64-46d8-a3a7-ec97a5ff01bc.png',
     panel: '#C46246',
     label: 'Terracotta'
   },
   { 
-    src: 'https://cdn.lastlap.fun/Adobe%20Express%20-%20file.png', 
+    src: 'https://cdn.lastlap.live/Adobe%20Express%20-%20file.png', 
     bg: '#52523A', 
-    bgImage: 'https://cdn.lastlap.fun/274c77ed-3538-4775-846d-f294c56cff3d.png',
+    bgImage: 'https://cdn.lastlap.live/274c77ed-3538-4775-846d-f294c56cff3d.png',
     panel: '#6B6A4B',
     label: 'Desert Olive'
   },
   { 
-    src: 'https://cdn.lastlap.fun/Untitled%20-%20August%2023%2C%202026%20at%2002.55.00.png', 
+    src: 'https://cdn.lastlap.live/Untitled%20-%20August%2023%2C%202026%20at%2002.55.00.png', 
     bg: '#28485B', 
-    bgImage: 'https://cdn.lastlap.fun/7739ea5d-36ca-4c20-a2e1-8249aaf96ffb.png',
+    bgImage: 'https://cdn.lastlap.live/7739ea5d-36ca-4c20-a2e1-8249aaf96ffb.png',
     panel: '#38617A',
     label: 'Rally Navy'
   },
