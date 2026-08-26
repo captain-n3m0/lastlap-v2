@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://lastlap.fun/</loc>
+    <loc>https://lastlap.live/</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -13,37 +13,37 @@
     </image:image>
   </url>
   <url>
-    <loc>https://lastlap.fun/#racers</loc>
+    <loc>https://lastlap.live/#racers</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://lastlap.fun/#lore</loc>
+    <loc>https://lastlap.live/#lore</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lastlap.fun/#token</loc>
+    <loc>https://lastlap.live/#token</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lastlap.fun/#game</loc>
+    <loc>https://lastlap.live/#game</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://lastlap.fun/#roadmap</loc>
+    <loc>https://lastlap.live/#roadmap</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://lastlap.fun/#faq</loc>
+    <loc>https://lastlap.live/#faq</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

@@ -258,7 +258,7 @@ export default function Footer() {
 
         {/* Bottom copyright line */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-white/50 gap-4">
-          <span>© 2024–2026 LASTLAP DOT FUN. ALL RIGHTS RESERVED.</span>
+          <span>© 2024–2026 LASTLAP DOT LIVE. ALL RIGHTS RESERVED.</span>
           <div className="flex items-center gap-4 uppercase">
             <span>TERMS OF RACING</span>
             <span>•</span>

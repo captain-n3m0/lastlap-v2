@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lastlap.fun/sitemap.xml
+Sitemap: https://lastlap.live/sitemap.xml
