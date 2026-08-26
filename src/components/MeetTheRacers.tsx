@@ -10,7 +10,6 @@ import { X, Eye, ChevronLeft, ChevronRight, RotateCw, Gauge, Zap, Shield, Compas
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CardSwap, Card, CardSwapRef } from './CardSwap';
-import { DustParticleCanvas } from './DustParticleCanvas';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -130,9 +129,6 @@ export default function MeetTheRacers() {
       id="racers"
       className="py-24 sm:py-36 bg-[#070707] relative border-b border-white/10 text-white overflow-hidden select-none"
     >
-      {/* Subtle Racing Dust Particle Canvas */}
-      <DustParticleCanvas containerRef={sectionRef} />
-
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-b from-white/5 via-white/[0.02] to-transparent blur-[140px] pointer-events-none -z-0" />
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-40 -z-0" />

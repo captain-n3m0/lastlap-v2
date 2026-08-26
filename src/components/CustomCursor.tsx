@@ -21,26 +21,35 @@ export const CustomCursor: React.FC = () => {
   const [isMouseDown, setIsMouseDown] = useState(false);
 
   useEffect(() => {
-    // Check if device is touch-primary or prefers reduced motion
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (isTouchDevice || prefersReducedMotion) {
+    if (prefersReducedMotion) {
       return;
     }
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-    let dotX = mouseX;
-    let dotY = mouseY;
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let dotX = -100;
+    let dotY = -100;
     let animationFrameId: number;
+    let hasMoved = false;
 
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      if (!isVisible) setIsVisible(true);
+      if (!hasMoved) {
+        hasMoved = true;
+        dotX = mouseX;
+        dotY = mouseY;
+        ringX = mouseX;
+        ringY = mouseY;
+      }
+      setIsVisible(true);
+    };
+
+    const onTouchStart = () => {
+      setIsVisible(false);
     };
 
     const onMouseDown = () => setIsMouseDown(true);
@@ -96,6 +105,7 @@ export const CustomCursor: React.FC = () => {
     };
 
     window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mouseup', onMouseUp);
     document.addEventListener('mouseleave', onMouseLeave);
@@ -128,13 +138,14 @@ export const CustomCursor: React.FC = () => {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
       document.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isVisible]);
+  }, []);
 
   // If invisible or on mobile, do not render
   return (

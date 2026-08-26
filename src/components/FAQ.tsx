@@ -128,6 +128,7 @@ export default function FAQ() {
               >
                 <button
                   type="button"
+                  data-no-magnetic="true"
                   onClick={() => toggle(item.id)}
                   aria-expanded={isOpen}
                   className="w-full p-7 text-left flex items-center justify-between gap-6 cursor-pointer"
@@ -138,7 +139,10 @@ export default function FAQ() {
                     </span>
                     {item.question}
                   </span>
-                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white shrink-0 border border-white/10">
+                  <div 
+                    data-magnetic
+                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white shrink-0 border border-white/10"
+                  >
                     {isOpen ? (
                       <ChevronUp className="w-5 h-5" />
                     ) : (

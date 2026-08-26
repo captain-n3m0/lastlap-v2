@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HERO_GALLERY_RACERS } from '../data/mockData';
+import HeroBlurUpImage from './HeroBlurUpImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,11 +50,81 @@ export default function Hero() {
     });
   }, [heroRacers]);
 
-  // GSAP Parallax ScrollTrigger setup
+  // GSAP Parallax ScrollTrigger & Initial Cinematic Reveal setup
   useEffect(() => {
     if (!heroContainerRef.current) return;
 
     const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Staggered Cinematic Intro Reveal on load
+      if (!prefersReducedMotion) {
+        const introTl = gsap.timeline({
+          defaults: { ease: 'power4.out' },
+          delay: 0.15,
+        });
+
+        // 1. Ghost Giant Typography Reveal
+        if (ghostTextRef.current) {
+          introTl.fromTo(
+            ghostTextRef.current,
+            { y: 80, opacity: 0, scale: 0.94, filter: 'blur(10px)' },
+            { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'power3.out' },
+            0
+          );
+        }
+
+        // 2. Central Rider Stage lift-in
+        if (racerStageRef.current) {
+          introTl.fromTo(
+            racerStageRef.current,
+            { y: 70, opacity: 0, scale: 0.92 },
+            { y: 0, opacity: 1, scale: 1, duration: 1.3, ease: 'expo.out' },
+            0.2
+          );
+        }
+
+        // 3. Dossier metadata badge
+        introTl.fromTo(
+          '.hero-reveal-dossier',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' },
+          0.45
+        );
+
+        // 4. Main Magazine Headline with kinetic slide & slight tilt
+        introTl.fromTo(
+          '.hero-reveal-headline',
+          { y: 50, opacity: 0, skewY: 2.5 },
+          { y: 0, opacity: 1, skewY: 0, duration: 1.1, ease: 'power4.out' },
+          0.6
+        );
+
+        // 5. Supporting Subtitle & Route Tagline
+        introTl.fromTo(
+          '.hero-reveal-tagline',
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' },
+          0.8
+        );
+
+        // 6. Navigation Controls & Index Indicators
+        introTl.fromTo(
+          '.hero-reveal-controls',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' },
+          0.95
+        );
+
+        // 7. Right Call-To-Action Button with snappy spring
+        introTl.fromTo(
+          '.hero-reveal-cta',
+          { y: 35, opacity: 0, scale: 0.92 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.5)' },
+          1.05
+        );
+      }
+
       // Parallax upward drift on ghost text
       if (ghostTextRef.current) {
         gsap.to(ghostTextRef.current, {
@@ -249,17 +320,23 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none z-[1]">
         {heroRacers.map((r, idx) =>
           r.bgImage ? (
-            <img
+            <div
               key={`bg-${r.id}`}
-              src={r.bgImage}
-              alt=""
-              referrerPolicy="no-referrer"
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+              className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
                 opacity: activeIndex === idx ? 1 : 0,
                 transition: 'opacity 650ms cubic-bezier(0.4, 0, 0.2, 1)',
               }}
-            />
+            >
+              <HeroBlurUpImage
+                src={r.bgImage}
+                alt=""
+                priority={idx === 0}
+                accentColor={r.color}
+                objectFit="cover"
+                objectPosition="center"
+              />
+            </div>
           ) : null
         )}
       </div>
@@ -304,6 +381,7 @@ export default function Hero() {
         {heroRacers.map((r, idx) => {
           const role = getRole(idx);
           const style = getItemStyle(role);
+          const isCenter = role === 'center';
           return (
             <div
               key={r.id}
@@ -315,17 +393,14 @@ export default function Hero() {
               }}
               aria-label={r.name}
             >
-              <img
+              <HeroBlurUpImage
                 src={r.image}
                 alt={r.name}
-                referrerPolicy="no-referrer"
+                priority={isCenter || idx === 0}
+                accentColor={r.color}
+                objectFit="contain"
+                objectPosition="bottom center"
                 draggable={false}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
-                }}
               />
             </div>
           );
@@ -337,7 +412,7 @@ export default function Hero() {
         ref={bottomControlsRef}
         className="absolute bottom-6 sm:bottom-12 left-4 sm:left-12 max-w-[460px] z-30"
       >
-        <div className="flex items-center gap-2.5 mb-3">
+        <div className="hero-reveal-dossier flex items-center gap-2.5 mb-3">
           <span className="px-2.5 py-1 rounded bg-black/60 backdrop-blur-md border border-white/30 text-[11px] font-mono font-bold text-white tracking-[0.2em]">
             DOSSIER {activeRacer.serial}
           </span>
@@ -349,14 +424,14 @@ export default function Hero() {
         {/* Main Headline with High-Contrast Magazine Display */}
         <h1
           id="hero-main-headline"
-          className="text-white font-black uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[0.95] mb-3 drop-shadow-lg"
+          className="hero-reveal-headline text-white font-black uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[0.95] mb-3 drop-shadow-lg"
           style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '-0.02em' }}
         >
           EVERY RIDER HAS A STORY.
         </h1>
 
         {/* Supporting Tagline */}
-        <p className="text-white/90 text-xs sm:text-sm font-semibold font-mono tracking-widest mb-6 uppercase flex items-center gap-2">
+        <p className="hero-reveal-tagline text-white/90 text-xs sm:text-sm font-semibold font-mono tracking-widest mb-6 uppercase flex items-center gap-2">
           <span>FIND YOUR ROUTE.</span>
           <span className="text-white/40">/</span>
           <span>OWN YOUR RACER.</span>
@@ -364,7 +439,7 @@ export default function Hero() {
 
         {/* Carousel controls */}
         <div 
-          className="flex items-center gap-4"
+          className="hero-reveal-controls flex items-center gap-4"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -418,7 +493,7 @@ export default function Hero() {
       </div>
 
       {/* Primary Action Button */}
-      <div className="absolute bottom-6 sm:bottom-12 right-4 sm:right-12 z-30">
+      <div className="hero-reveal-cta absolute bottom-6 sm:bottom-12 right-4 sm:right-12 z-30">
         <a
           href="#journey"
           id="hero-primary-cta"

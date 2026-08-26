@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --radius-full: 999px;
+}
 
 @theme {
   --font-anton: 'Anton', sans-serif;
@@ -17,6 +22,27 @@ html {
   min-height: 100%;
   background-color: #060606;
   text-rendering: optimizeLegibility;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {
@@ -104,11 +130,35 @@ h1, h2, h3, h4, h5, h6,
   color: transparent;
 }
 
-/* Custom Racing Reticle Cursor styling on desktop fine pointer */
-@media (hover: hover) and (pointer: fine) {
+/* Universal Custom Racing Reticle Cursor styling on pointer/hover devices */
+@media (pointer: fine), (hover: hover) {
+  *,
+  *::before,
+  *::after,
+  html,
   body,
-  a,
+  input,
   button,
+  select,
+  textarea,
+  a,
+  img,
+  video,
+  svg,
+  canvas,
+  label,
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  div,
+  section,
+  header,
+  footer,
+  main,
+  nav,
   [role="button"],
   .cursor-pointer,
   .cursor-grab,
