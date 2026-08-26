@@ -117,22 +117,27 @@ export const DustParticleCanvas: React.FC<{ containerRef: React.RefObject<HTMLEl
       }
     };
 
-    // Scroll listener for velocity calculation
+    // Throttled scroll listener for velocity calculation
+    let scrollRafId: number | null = null;
     const handleScroll = () => {
-      const now = performance.now();
-      const currentScrollY = window.scrollY;
-      const timeDelta = Math.max(now - lastScrollTime, 16);
-      const distDelta = currentScrollY - lastScrollY;
-      
-      // Calculate smoothed scroll velocity
-      scrollVelocity = (distDelta / timeDelta) * 20;
+      if (scrollRafId !== null) return;
+      scrollRafId = requestAnimationFrame(() => {
+        const now = performance.now();
+        const currentScrollY = window.scrollY;
+        const timeDelta = Math.max(now - lastScrollTime, 16);
+        const distDelta = currentScrollY - lastScrollY;
+        
+        // Calculate smoothed scroll velocity
+        scrollVelocity = (distDelta / timeDelta) * 20;
 
-      if (isVisible && Math.abs(scrollVelocity) > 0.5) {
-        emitDustTrail(scrollVelocity);
-      }
+        if (isVisible && Math.abs(scrollVelocity) > 0.5) {
+          emitDustTrail(scrollVelocity);
+        }
 
-      lastScrollY = currentScrollY;
-      lastScrollTime = now;
+        lastScrollY = currentScrollY;
+        lastScrollTime = now;
+        scrollRafId = null;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -216,6 +221,7 @@ export const DustParticleCanvas: React.FC<{ containerRef: React.RefObject<HTMLEl
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      if (scrollRafId !== null) cancelAnimationFrame(scrollRafId);
       window.removeEventListener('scroll', handleScroll);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();

@@ -12,10 +12,16 @@ export default function Navbar() {
   const [timeStr, setTimeStr] = useState('');
 
   useEffect(() => {
+    let scrollRafId: number | null = null;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      if (scrollRafId !== null) return;
+      scrollRafId = requestAnimationFrame(() => {
+        const scrolled = window.scrollY > 40;
+        setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+        scrollRafId = null;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     const updateTime = () => {
       const now = new Date();
@@ -25,6 +31,7 @@ export default function Navbar() {
     const interval = setInterval(updateTime, 1000);
 
     return () => {
+      if (scrollRafId !== null) cancelAnimationFrame(scrollRafId);
       window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };

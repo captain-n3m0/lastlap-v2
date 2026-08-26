@@ -162,10 +162,10 @@ export default function MeetTheRacers() {
         </div>
 
         {/* Showcase Grid: Left Dossier Stats + Center CardSwap Deck */}
-        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center transform-gpu [will-change:transform]">
           {/* Left Column: Active Racer Telemetry HUD */}
           <div className="lg:col-span-5 flex flex-col justify-between space-y-6 order-2 lg:order-1">
-            <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden">
+            <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden transform-gpu [will-change:transform]">
               {/* Top Accent bar */}
               <div
                 className="absolute top-0 left-0 right-0 h-1.5 transition-colors duration-500"
@@ -313,7 +313,7 @@ export default function MeetTheRacers() {
             </div>
 
             <div
-              className="relative flex items-center justify-center"
+              className="relative flex items-center justify-center transform-gpu [will-change:transform]"
               style={{
                 width: cardDimensions.width + 50,
                 height: cardDimensions.height + 40
@@ -338,13 +338,13 @@ export default function MeetTheRacers() {
                 {racersList.map((racer) => (
                   <Card
                     key={racer.id}
-                    customClass="cursor-pointer group overflow-hidden border border-white/15 hover:border-white/50 transition-colors duration-300"
+                    customClass="cursor-pointer group overflow-hidden border border-white/15 hover:border-white/50 transition-colors duration-300 transform-gpu [will-change:transform]"
                     style={{
                       background: `linear-gradient(170deg, #18181b 0%, #09090b 100%)`,
                       boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 30px -5px ${racer.color}20`,
                     }}
                   >
-                    <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-6">
+                    <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-6 transform-gpu">
                       {/* Top Header Row on Card */}
                       <div className="flex items-center justify-between z-10">
                         <div className="flex items-center gap-2">
@@ -357,52 +357,30 @@ export default function MeetTheRacers() {
                         </span>
                       </div>
 
-                      {/* Character Visual Showcase with Trailing Motion Ghost Layers */}
-                      <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5">
+                      {/* Character Visual Showcase */}
+                      <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5 transform-gpu [will-change:transform]">
                         {racer.bgImage && (
                           <img
                             src={racer.bgImage}
                             alt=""
-                            className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-40 transition-opacity duration-500"
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-40 transition-opacity duration-300 transform-gpu"
                           />
                         )}
 
-                        {/* Speed streak lines (active during fast swipe transition) */}
+                        {/* Speed streak lines */}
                         <div
-                          className="card-speed-streak absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_6px,rgba(255,255,255,0.06)_6px,rgba(255,255,255,0.06)_8px)] z-0"
+                          className="card-speed-streak absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_6px,rgba(255,255,255,0.06)_6px,rgba(255,255,255,0.06)_8px)] z-0 transform-gpu"
                         />
 
-                        {/* Trailing Motion Ghost Layer 2 (Outer Echo) */}
-                        <img
-                          src={racer.image}
-                          alt=""
-                          aria-hidden="true"
-                          className="card-trail-ghost-2 absolute z-[5] max-h-[90%] max-w-[90%] object-contain opacity-0 pointer-events-none select-none transition-none transform-gpu"
-                          style={{
-                            filter: 'blur(3px)',
-                            mixBlendMode: 'screen',
-                          }}
-                        />
-
-                        {/* Trailing Motion Ghost Layer 1 (Immediate Warp Trail) */}
-                        <img
-                          src={racer.image}
-                          alt=""
-                          aria-hidden="true"
-                          className="card-trail-ghost-1 absolute z-[8] max-h-[90%] max-w-[90%] object-contain opacity-0 pointer-events-none select-none transition-none transform-gpu"
-                          style={{
-                            filter: 'blur(1.5px)',
-                            mixBlendMode: 'screen',
-                          }}
-                        />
-
-                        {/* Main Crisp Character Image */}
+                        {/* Main Character Image */}
                         <img
                           src={racer.image}
                           alt={racer.name}
-                          className="card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 transform-gpu"
+                          loading="lazy"
+                          className="card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-300 transform-gpu [will-change:transform]"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80 pointer-events-none" />
 
                         {/* Inspect Badge */}
                         <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-20">
@@ -447,7 +425,7 @@ export default function MeetTheRacers() {
           onClick={() => setSelectedRacer(null)}
         >
           <div
-            className="relative w-full max-w-3xl rounded-3xl bg-zinc-950 border border-white/20 overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto"
+            className="relative w-full max-w-3xl rounded-3xl bg-zinc-950 border border-white/20 overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto transform-gpu [will-change:transform]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

@@ -54,8 +54,18 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     lenisRef.current = lenis;
     setLenisInstance(lenis);
 
-    // Sync Lenis scroll events with GSAP ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
+    // Throttled ScrollTrigger update using requestAnimationFrame to batch DOM reads/updates
+    // and prevent layout thrashing while cards and interactive elements animate
+    let scrollRafId: number | null = null;
+    const handleLenisScroll = () => {
+      if (scrollRafId !== null) return;
+      scrollRafId = requestAnimationFrame(() => {
+        ScrollTrigger.update();
+        scrollRafId = null;
+      });
+    };
+
+    lenis.on('scroll', handleLenisScroll);
 
     // Drive Lenis from GSAP's ticker with lag smoothing enabled
     const tickerCallback = (time: number) => {
@@ -89,6 +99,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     document.addEventListener('click', handleAnchorClick, { capture: true });
 
     return () => {
+      if (scrollRafId !== null) cancelAnimationFrame(scrollRafId);
       document.removeEventListener('click', handleAnchorClick, { capture: true });
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();

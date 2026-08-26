@@ -44,7 +44,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...res
     data-cursor="card"
     data-cursor-label="DRAG / INSPECT"
     {...rest}
-    className={`racer-card absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing transition-shadow duration-300 ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
+    className={`racer-card absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl [transform-style:preserve-3d] [will-change:transform] transform-gpu [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing transition-shadow duration-300 ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
   />
 ));
 
@@ -152,20 +152,20 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   const config = useMemo(() => 
     easing === 'elastic'
       ? {
-          ease: 'elastic.out(0.6,0.9)',
-          durDrop: 1.6,
-          durMove: 1.6,
-          durReturn: 1.6,
-          promoteOverlap: 0.85,
+          ease: 'power3.out',
+          durDrop: 0.65,
+          durMove: 0.65,
+          durReturn: 0.65,
+          promoteOverlap: 0.7,
           returnDelay: 0.05
         }
       : {
           ease: 'power2.inOut',
-          durDrop: 0.8,
-          durMove: 0.8,
-          durReturn: 0.8,
+          durDrop: 0.6,
+          durMove: 0.6,
+          durReturn: 0.6,
           promoteOverlap: 0.45,
-          returnDelay: 0.2
+          returnDelay: 0.15
         },
     [easing]
   );
@@ -183,8 +183,9 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
   // Active hover indicator slot state for rendering docking guide
   const [dockingSlotIndex, setDockingSlotIndex] = useState<number | null>(null);
+  const isVisibleRef = useRef<boolean>(true);
 
-  // Helper to trigger image trailing motion animations inside a card element
+  // Fast GPU-accelerated trail response without costly CPU blur filter recalculation
   const triggerImageTrail = (
     cardEl: HTMLElement | null,
     options: {
@@ -192,14 +193,12 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       trailY?: number;
       trailScale?: number;
       trailOpacity?: number;
-      blur?: number;
       duration?: number;
       ease?: string;
     }
   ) => {
     if (!cardEl) return;
     const trail1 = cardEl.querySelector<HTMLElement>('.card-trail-ghost-1');
-    const trail2 = cardEl.querySelector<HTMLElement>('.card-trail-ghost-2');
     const mainImg = cardEl.querySelector<HTMLElement>('.card-main-image');
     const speedLines = cardEl.querySelector<HTMLElement>('.card-speed-streak');
 
@@ -208,8 +207,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       trailY = 0,
       trailScale = 1,
       trailOpacity = 0,
-      blur = 0,
-      duration = 0.5,
+      duration = 0.35,
       ease = 'power2.out'
     } = options;
 
@@ -219,21 +217,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         y: trailY,
         scale: trailScale,
         opacity: trailOpacity,
-        filter: blur > 0 ? `blur(${blur}px)` : 'none',
         duration,
-        ease,
-        overwrite: 'auto'
-      });
-    }
-
-    if (trail2) {
-      gsap.to(trail2, {
-        x: trailX * 1.6,
-        y: trailY * 1.6,
-        scale: trailScale * 1.03,
-        opacity: trailOpacity * 0.6,
-        filter: blur > 0 ? `blur(${blur * 1.5}px)` : 'none',
-        duration: duration * 1.1,
         ease,
         overwrite: 'auto'
       });
@@ -241,8 +225,8 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
     if (mainImg && (trailX !== 0 || trailY !== 0)) {
       gsap.to(mainImg, {
-        x: -trailX * 0.25,
-        y: -trailY * 0.25,
+        x: -trailX * 0.2,
+        y: -trailY * 0.2,
         duration: duration * 0.8,
         ease,
         overwrite: 'auto'
@@ -251,9 +235,8 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
     if (speedLines) {
       gsap.to(speedLines, {
-        opacity: trailOpacity > 0 ? 0.65 : 0,
-        scaleY: trailOpacity > 0 ? 1.2 : 1,
-        duration: 0.3,
+        opacity: trailOpacity > 0 ? 0.6 : 0,
+        duration: 0.2,
         ease: 'power2.out',
         overwrite: 'auto'
       });
@@ -292,7 +275,6 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         trailX: 0,
         trailY: 0,
         trailOpacity: 0,
-        blur: 0,
         duration: 0.4
       });
     });
@@ -324,12 +306,11 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
       // Activate trailing motion effect for swinging card
       triggerImageTrail(elLast, {
-        trailX: 24,
-        trailY: -20,
-        trailScale: 1.06,
-        trailOpacity: 0.55,
-        blur: 2.5,
-        duration: 0.6
+        trailX: 20,
+        trailY: -15,
+        trailScale: 1.04,
+        trailOpacity: 0.4,
+        duration: 0.4
       });
 
       // Bring last card up and to front
@@ -340,7 +321,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         z: 150,
         scale: 1.05,
         rotationZ: -6,
-        duration: 0.5,
+        duration: 0.4,
         ease: 'power2.out'
       });
 
@@ -352,11 +333,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         const slot = makeSlot(i + 1, cardDistance, verticalDistance, total, skewAmount);
         
         triggerImageTrail(el, {
-          trailX: -8,
-          trailY: 6,
-          trailOpacity: 0.25,
-          blur: 1.5,
-          duration: 0.4
+          trailX: -6,
+          trailY: 4,
+          trailOpacity: 0.2,
+          duration: 0.3
         });
 
         tl.to(
@@ -369,10 +349,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
             scale: slot.scale ?? 1,
             opacity: slot.opacity ?? 1,
             zIndex: slot.zIndex,
-            duration: 0.5,
+            duration: 0.4,
             ease: 'power2.out',
             onComplete: () => {
-              triggerImageTrail(el, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.3 });
+              triggerImageTrail(el, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.2 });
             }
           },
           '0.1'
@@ -391,7 +371,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           opacity: frontSlot.opacity ?? 1,
           rotationZ: 0,
           zIndex: total,
-          duration: 0.6,
+          duration: 0.5,
           ease: 'power3.out'
         },
         '-=0.2'
@@ -416,18 +396,17 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     const tl = gsap.timeline({
       onComplete: () => {
         isSwapping.current = false;
-        triggerImageTrail(elFront, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.4 });
+        triggerImageTrail(elFront, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.3 });
       }
     });
     tlRef.current = tl;
 
     // Apply upward vertical trailing motion effect to the dropping front card
     triggerImageTrail(elFront, {
-      trailX: -10,
-      trailY: -35,
-      trailScale: 1.04,
-      trailOpacity: 0.6,
-      blur: 3,
+      trailX: -8,
+      trailY: -25,
+      trailScale: 1.03,
+      trailOpacity: 0.45,
       duration: config.durDrop * 0.7
     });
 
@@ -445,10 +424,9 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
       // Subtle forward velocity trail for promoted cards
       triggerImageTrail(el, {
-        trailX: 12,
-        trailY: -8,
-        trailOpacity: 0.35,
-        blur: 1.8,
+        trailX: 10,
+        trailY: -6,
+        trailOpacity: 0.25,
         duration: config.durMove * 0.6
       });
 
@@ -523,15 +501,15 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     resetDeck
   }), [triggerSwap, triggerSwapPrev, resetDeck]);
 
-  // Restart auto timer
+  // Restart auto timer (only if currently visible in viewport)
   const restartTimer = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    if (delay > 0 && refs.length >= 2) {
+    if (delay > 0 && refs.length >= 2 && isVisibleRef.current) {
       intervalRef.current = window.setInterval(() => triggerSwap('next'), delay);
     }
   }, [delay, refs.length, triggerSwap]);
 
-  // Initialize and place cards
+  // Initialize, place cards, and attach viewport observer
   useEffect(() => {
     order.current = Array.from({ length: refs.length }, (_, i) => i);
     onActiveChangeRef.current?.(0);
@@ -543,7 +521,26 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       }
     });
 
-    restartTimer();
+    // Viewport IntersectionObserver to prevent background execution during scroll
+    let observer: IntersectionObserver | null = null;
+    if (container.current && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          isVisibleRef.current = entry?.isIntersecting ?? true;
+          if (entry?.isIntersecting) {
+            restartTimer();
+          } else {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            tlRef.current?.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(container.current);
+    } else {
+      restartTimer();
+    }
 
     if (pauseOnHover && container.current) {
       const node = container.current;
@@ -554,7 +551,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         }
       };
       const resume = () => {
-        if (!isDragging.current) {
+        if (!isDragging.current && isVisibleRef.current) {
           tlRef.current?.play();
           restartTimer();
         }
@@ -562,6 +559,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       node.addEventListener('mouseenter', pause);
       node.addEventListener('mouseleave', resume);
       return () => {
+        observer?.disconnect();
         node.removeEventListener('mouseenter', pause);
         node.removeEventListener('mouseleave', resume);
         if (intervalRef.current) clearInterval(intervalRef.current);
@@ -569,6 +567,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     }
 
     return () => {
+      observer?.disconnect();
       if (intervalRef.current) clearInterval(intervalRef.current);
       tlRef.current?.kill();
     };
@@ -666,7 +665,6 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         trailY: trailLagY,
         trailScale: 1.03,
         trailOpacity: trailAlpha,
-        blur: Math.min(4, dist / 30),
         duration: 0.15
       });
 
@@ -771,13 +769,13 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       }}
     >
       {/* 3D Container */}
-      <div className="absolute inset-0 [transform-style:preserve-3d]">
+      <div className="absolute inset-0 [transform-style:preserve-3d] transform-gpu [will-change:transform]">
         {rendered}
 
         {/* Docking Indicator Guide when dragging */}
         {dockingSlotIndex !== null && (
           <div
-            className="absolute top-1/2 left-1/2 pointer-events-none rounded-2xl border-2 border-dashed border-cyan-400/60 bg-cyan-500/10 shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all duration-300 ease-out"
+            className="absolute top-1/2 left-1/2 pointer-events-none rounded-2xl border-2 border-dashed border-cyan-400/60 bg-cyan-500/10 shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all duration-300 ease-out transform-gpu [will-change:transform]"
             style={{
               width,
               height,
