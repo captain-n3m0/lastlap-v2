@@ -7,6 +7,7 @@ import React, { useRef, useEffect } from 'react';
 import { ArrowRight, ExternalLink, ArrowUp, Sparkles, MapPin, Compass } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { OpenSeaLogo } from './OpenSeaLogo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -178,13 +179,14 @@ export default function Footer() {
                 <DiscordLogo className="w-4 h-4" />
               </a>
               <a
-                href="https://opensea.io"
+                href="https://opensea.io/collection/lastlaprh"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="OpenSea Collection"
-                className="w-11 h-11 rounded-2xl bg-zinc-950/90 border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-white hover:bg-zinc-900 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                className="w-11 h-11 rounded-2xl bg-zinc-950/90 border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-cyan-400 hover:text-cyan-400 hover:bg-zinc-900 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                title="OpenSea Collection"
               >
-                <ExternalLink className="w-4 h-4" />
+                <OpenSeaLogo className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -219,6 +221,17 @@ export default function Footer() {
               PADDOCK INTEL
             </h4>
             <ul className="space-y-2.5 text-xs font-mono text-white/70">
+              <li>
+                <a
+                  href="https://opensea.io/collection/lastlaprh"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-cyan-400 transition-colors flex items-center gap-1.5"
+                >
+                  <OpenSeaLogo className="w-3.5 h-3.5" />
+                  <span>OPENSEA COLLECTION</span>
+                </a>
+              </li>
               <li>
                 <a href="#faq" className="hover:text-white transition-colors">FREQUENTLY ASKED QUESTIONS</a>
               </li>

@@ -10,8 +10,63 @@ import { X, Eye, ChevronLeft, ChevronRight, RotateCw, Gauge, Zap, Shield, Compas
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CardSwap, Card, CardSwapRef } from './CardSwap';
+import { OpenSeaLogo } from './OpenSeaLogo';
+import { RacerCardVisual } from './RacerCardVisual';
 
 gsap.registerPlugin(ScrollTrigger);
+
+function DossierModalVisual({ racer }: { racer: Racer }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  return (
+    <div
+      className="h-52 sm:h-72 w-full rounded-2xl flex items-end justify-center relative overflow-hidden border border-white/10"
+      style={{ backgroundColor: racer.color }}
+    >
+      {racer.bgImage && (
+        <img
+          src={racer.bgImage}
+          alt=""
+          onLoad={() => setBgLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            bgLoaded ? 'opacity-50' : 'opacity-0'
+          }`}
+        />
+      )}
+
+      {/* Skeletal Telemetry Loading State */}
+      <div
+        className={`absolute inset-0 z-15 flex flex-col items-center justify-center p-4 transition-opacity duration-500 bg-zinc-950/70 backdrop-blur-xs ${
+          imageLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+        aria-hidden={imageLoaded}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0d_1px,transparent_1px)] [background-size:12px_12px] opacity-70 pointer-events-none" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="w-full h-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-full animate-telemetry-shimmer" />
+        </div>
+        <div className="relative flex flex-col items-center gap-2 z-10">
+          <div className="w-12 h-12 rounded-xl bg-black/60 border border-white/20 flex items-center justify-center">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+          </div>
+          <span className="text-[10px] font-mono font-bold tracking-widest text-white/80 uppercase">
+            DOWNLOADING DOSSIER RIG // {racer.serial}
+          </span>
+        </div>
+      </div>
+
+      <img
+        src={racer.image}
+        alt={racer.serial}
+        onLoad={() => setImageLoaded(true)}
+        className={`relative z-10 h-full object-contain object-bottom transition-all duration-500 ${
+          imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+      />
+    </div>
+  );
+}
 
 export default function MeetTheRacers() {
   const [selectedRacer, setSelectedRacer] = useState<Racer | null>(null);
@@ -154,10 +209,23 @@ export default function MeetTheRacers() {
             </p>
           </div>
 
-          {/* Gesture Guide Pill */}
-          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-white/70">
-            <Hand className="w-3.5 h-3.5 text-amber-400" />
-            <span>SWIPE OR DRAG TO REORDER</span>
+          {/* Header Action Pills */}
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="https://opensea.io/collection/lastlaprh"
+              target="_blank"
+              rel="noreferrer"
+              id="racers-opensea-btn"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-cyan-400/30 text-cyan-400 font-mono text-xs font-bold hover:bg-cyan-950/40 hover:border-cyan-400 hover:text-white transition-all shadow-md no-underline"
+            >
+              <OpenSeaLogo className="w-3.5 h-3.5" />
+              <span>OPENSEA COLLECTION</span>
+            </a>
+
+            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-white/70">
+              <Hand className="w-3.5 h-3.5 text-amber-400" />
+              <span>SWIPE OR DRAG TO REORDER</span>
+            </div>
           </div>
         </div>
 
@@ -357,37 +425,8 @@ export default function MeetTheRacers() {
                         </span>
                       </div>
 
-                      {/* Character Visual Showcase */}
-                      <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/5 transform-gpu [will-change:transform]">
-                        {racer.bgImage && (
-                          <img
-                            src={racer.bgImage}
-                            alt=""
-                            loading="lazy"
-                            className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-40 transition-opacity duration-300 transform-gpu"
-                          />
-                        )}
-
-                        {/* Speed streak lines */}
-                        <div
-                          className="card-speed-streak absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_6px,rgba(255,255,255,0.06)_6px,rgba(255,255,255,0.06)_8px)] z-0 transform-gpu"
-                        />
-
-                        {/* Main Character Image */}
-                        <img
-                          src={racer.image}
-                          alt={racer.name}
-                          loading="lazy"
-                          className="card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-300 transform-gpu [will-change:transform]"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80 pointer-events-none" />
-
-                        {/* Inspect Badge */}
-                        <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[9px] font-mono font-bold text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-20">
-                          <span>TAP DOSSIER</span>
-                          <ChevronRight className="w-3 h-3" />
-                        </div>
-                      </div>
+                      {/* Character Visual Showcase with Skeletal Loading */}
+                      <RacerCardVisual racer={racer} />
 
                       {/* Card Bottom Specs */}
                       <div className="z-10 pt-3 border-t border-white/10">
@@ -460,24 +499,8 @@ export default function MeetTheRacers() {
 
             {/* Modal Body */}
             <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
-              {/* Visual Showcase */}
-              <div
-                className="h-52 sm:h-72 w-full rounded-2xl flex items-end justify-center relative overflow-hidden border border-white/10"
-                style={{ backgroundColor: selectedRacer.color }}
-              >
-                {selectedRacer.bgImage && (
-                  <img
-                    src={selectedRacer.bgImage}
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover opacity-50"
-                  />
-                )}
-                <img
-                  src={selectedRacer.image}
-                  alt={selectedRacer.serial}
-                  className="relative z-10 h-full object-contain object-bottom"
-                />
-              </div>
+              {/* Visual Showcase with Skeletal Loading */}
+              <DossierModalVisual racer={selectedRacer} />
 
               {/* Telemetry Stats Grid */}
               <div>
@@ -534,13 +557,24 @@ export default function MeetTheRacers() {
                 <div className="text-xs font-mono text-white/50">
                   PROOF OF SPEED // GENESIS ONCHAIN MINT
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedRacer(null)}
-                  className="px-6 py-2.5 rounded-full bg-white text-black font-mono font-bold text-xs tracking-widest uppercase hover:bg-zinc-200 cursor-pointer"
-                >
-                  CLOSE DOSSIER
-                </button>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="https://opensea.io/collection/lastlaprh"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-5 py-2.5 rounded-full bg-zinc-900 border border-cyan-400/40 text-cyan-400 font-mono font-bold text-xs tracking-widest uppercase hover:bg-cyan-500 hover:text-black hover:border-cyan-500 transition-all flex items-center gap-2 no-underline"
+                  >
+                    <OpenSeaLogo className="w-3.5 h-3.5" />
+                    <span>VIEW ON OPENSEA</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRacer(null)}
+                    className="px-6 py-2.5 rounded-full bg-white text-black font-mono font-bold text-xs tracking-widest uppercase hover:bg-zinc-200 cursor-pointer"
+                  >
+                    CLOSE DOSSIER
+                  </button>
+                </div>
               </div>
             </div>
           </div>

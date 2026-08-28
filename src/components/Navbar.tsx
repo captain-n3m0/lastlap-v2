@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Sparkles, Radio } from 'lucide-react';
+import { OpenSeaLogo } from './OpenSeaLogo';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -101,12 +102,23 @@ export default function Navbar() {
         </nav>
 
         {/* Header Actions & Telemetry Clock */}
-        <div className="hidden sm:flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-3.5">
           {timeStr && (
-            <span className="hidden md:inline-block font-mono text-[11px] text-white/50 tracking-wider">
+            <span className="hidden md:inline-block font-mono text-[11px] text-white/50 tracking-wider mr-1">
               {timeStr}
             </span>
           )}
+          <a
+            href="https://opensea.io/collection/lastlaprh"
+            target="_blank"
+            rel="noreferrer"
+            id="header-opensea-btn"
+            className="px-3.5 py-2 bg-zinc-900/90 border border-white/20 hover:border-cyan-400 hover:text-cyan-400 text-white font-mono font-bold text-xs tracking-wider uppercase rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg no-underline"
+            title="OpenSea Collection"
+          >
+            <OpenSeaLogo className="w-4 h-4 text-cyan-400" />
+            <span className="hidden xl:inline">OPENSEA</span>
+          </a>
           <a
             href="#racers"
             id="header-cta-btn"
@@ -149,6 +161,16 @@ export default function Navbar() {
             ))}
           </div>
           <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+            <a
+              href="https://opensea.io/collection/lastlaprh"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-3 bg-zinc-900 border border-cyan-400/40 text-white font-mono font-bold text-center text-xs tracking-widest uppercase rounded-xl flex items-center justify-center gap-2 no-underline hover:border-cyan-400"
+            >
+              <OpenSeaLogo className="w-4 h-4 text-cyan-400" />
+              <span>VIEW OPENSEA COLLECTION</span>
+            </a>
             <a
               href="#racers"
               onClick={() => setMobileMenuOpen(false)}

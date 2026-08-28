@@ -7,6 +7,7 @@ import React, { useEffect, useRef } from 'react';
 import { Compass, Flame, Shield, Globe, Users, Gamepad2, Award, Sparkles, BookOpen } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { OpenSeaLogo } from './OpenSeaLogo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -204,11 +205,20 @@ export default function AboutStory() {
                 The LastLap NFT collection brings together racing, street culture, adventure, and identity through distinctive rider characters designed to represent the community. As the ecosystem grows, holders will be able to take part in future experiences, utilities, rewards, collaborations, and community-driven activities.
               </p>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase">
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   <span>LastLap NFTs — Coming Soon on Robinhood</span>
                 </div>
+                <a
+                  href="https://opensea.io/collection/lastlaprh"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 border border-cyan-400/40 text-cyan-400 hover:text-white hover:bg-cyan-950/50 hover:border-cyan-400 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all no-underline shadow-md"
+                >
+                  <OpenSeaLogo className="w-4 h-4" />
+                  <span>OPENSEA COLLECTION</span>
+                </a>
               </div>
             </div>
 

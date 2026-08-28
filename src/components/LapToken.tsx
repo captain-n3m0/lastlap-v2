@@ -7,6 +7,7 @@ import React, { useEffect, useRef } from 'react';
 import { Lock, Coins, Zap, Shield, Percent, Sparkles, ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { OpenSeaLogo } from './OpenSeaLogo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -240,7 +241,16 @@ export default function LapToken() {
                 <span>Join our official channels for real-time TGE, liquidity, and token announcement dates.</span>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href="https://opensea.io/collection/lastlaprh"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-5 py-3 rounded-2xl bg-zinc-900 border border-cyan-400/30 hover:border-cyan-400 text-cyan-400 hover:text-white text-xs font-mono font-bold tracking-widest uppercase flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+                >
+                  <OpenSeaLogo className="w-3.5 h-3.5" />
+                  <span>OPENSEA</span>
+                </a>
                 <a
                   href="https://x.com/lastlaprh?s=11"
                   target="_blank"
