@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { RACERS } from '../data/mockData';
 import { Racer } from '../types';
 import { X, Eye, ChevronLeft, ChevronRight, RotateCw, Gauge, Zap, Shield, Compass, Hand, Sparkles } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -71,6 +70,8 @@ function DossierModalVisual({ racer }: { racer: Racer }) {
 export default function MeetTheRacers() {
   const [selectedRacer, setSelectedRacer] = useState<Racer | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
+  const [racersList, setRacersList] = useState<Racer[]>([]);
+  const [isLoadingRacers, setIsLoadingRacers] = useState(true);
   const [viewportWidth, setViewportWidth] = useState<number>(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
@@ -79,6 +80,50 @@ export default function MeetTheRacers() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
+
+  // Fetch NFTs from OpenSea proxy route
+  useEffect(() => {
+    let mounted = true;
+    const fetchNFTs = async () => {
+      try {
+        const response = await fetch('/api/opensea/nfts');
+        if (!response.ok) throw new Error('Failed to fetch NFTs');
+        const data = await response.json();
+        if (data && data.nfts && data.nfts.length > 0 && mounted) {
+          const mappedRacers: Racer[] = data.nfts.map((nft: any, index: number) => {
+            const getTrait = (type: string) => nft.traits?.find((t: any) => t.trait_type === type)?.value;
+            return {
+              id: nft.identifier,
+              name: nft.name || `Racer #${nft.identifier}`,
+              serial: String(nft.identifier).padStart(4, '0'),
+              image: nft.image_url || nft.display_image_url || '',
+              bgImage: '',
+              color: ['#3b82f6', '#f59e0b', '#ec4899', '#10b981', '#8b5cf6'][index % 5],
+              panelColor: 'bg-zinc-950',
+              traits: nft.traits?.map((t: any) => `${t.trait_type}: ${t.value}`) || [],
+              bio: nft.description || 'Genesis Racer on the Robinhood Network.',
+              stats: {
+                speed: getTrait('Speed') ? parseInt(getTrait('Speed'), 10) : Math.floor(Math.random() * 30) + 70,
+                acceleration: getTrait('Acceleration') ? parseInt(getTrait('Acceleration'), 10) : Math.floor(Math.random() * 30) + 70,
+                grit: getTrait('Grit') ? parseInt(getTrait('Grit'), 10) : Math.floor(Math.random() * 30) + 70,
+                handling: getTrait('Handling') ? parseInt(getTrait('Handling'), 10) : Math.floor(Math.random() * 30) + 70,
+              },
+              rarity: getTrait('Rarity') || 'Rare',
+              archetype: getTrait('Archetype') || 'Unknown',
+              bike: getTrait('Bike') || 'Genesis'
+            };
+          });
+          setRacersList(mappedRacers);
+        }
+      } catch (err) {
+        console.warn('Could not fetch from OpenSea:', err);
+      } finally {
+        if (mounted) setIsLoadingRacers(false);
+      }
+    };
+    fetchNFTs();
+    return () => { mounted = false; };
+  }, []);
 
   // Track window resizing for responsive 3D card deck scaling
   useEffect(() => {
@@ -93,7 +138,6 @@ export default function MeetTheRacers() {
     setActiveCardIndex(idx);
   }, []);
 
-  const racersList = RACERS;
   const activeRacer = racersList[activeCardIndex] || racersList[0];
 
   // Dynamically calculate proportional 3D dimensions based on viewport
@@ -231,14 +275,25 @@ export default function MeetTheRacers() {
 
         {/* Showcase Grid: Left Dossier Stats + Center CardSwap Deck */}
         <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center transform-gpu [will-change:transform]">
-          {/* Left Column: Active Racer Telemetry HUD */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6 order-2 lg:order-1">
-            <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden transform-gpu [will-change:transform]">
-              {/* Top Accent bar */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5 transition-colors duration-500"
-                style={{ backgroundColor: activeRacer.color || '#fff' }}
-              />
+          {!activeRacer ? (
+            <div className="lg:col-span-12 py-32 flex flex-col items-center justify-center space-y-4 text-center">
+               <div className="w-12 h-12 rounded-xl bg-black/60 border border-white/20 flex items-center justify-center mb-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${isLoadingRacers ? 'bg-cyan-400 animate-ping' : 'bg-red-500'}`} />
+                </div>
+                <span className="text-xs font-mono font-bold tracking-widest text-white/80 uppercase">
+                  {isLoadingRacers ? 'FETCHING LIVE ROSTER FROM OPENSEA // PLEASE STAND BY' : 'CONNECTION FAILED // PLEASE CONFIGURE OPENSEA_API_KEY'}
+                </span>
+            </div>
+          ) : (
+            <>
+              {/* Left Column: Active Racer Telemetry HUD */}
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-6 order-2 lg:order-1">
+                <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden transform-gpu [will-change:transform]">
+                  {/* Top Accent bar */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-1.5 transition-colors duration-500"
+                    style={{ backgroundColor: activeRacer.color || '#fff' }}
+                  />
 
               <div className="flex items-center justify-between mb-4">
                 <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-mono font-bold text-white tracking-widest">
@@ -453,6 +508,8 @@ export default function MeetTheRacers() {
               </CardSwap>
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
 
