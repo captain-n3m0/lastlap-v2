@@ -103,7 +103,7 @@ export default function MeetTheRacers() {
             return {
               id: nft.identifier,
               name: nft.name || `Racer #${nft.identifier}`,
-              serial: String(nft.identifier).padStart(4, '0'),
+              serial: String(nft.identifier),
               image: nft.image_url || nft.display_image_url || fallbackImages[index % fallbackImages.length],
               bgImage: '',
               color: ['#3b82f6', '#f59e0b', '#ec4899', '#10b981', '#8b5cf6'][index % 5],
@@ -111,10 +111,10 @@ export default function MeetTheRacers() {
               traits: nft.traits?.map((t: any) => `${t.trait_type}: ${t.value}`) || [],
               bio: nft.description || 'Genesis Racer on the Robinhood Network.',
               stats: {
-                speed: getTrait('Speed') ? parseInt(getTrait('Speed'), 10) : Math.floor(Math.random() * 30) + 70,
-                acceleration: getTrait('Acceleration') ? parseInt(getTrait('Acceleration'), 10) : Math.floor(Math.random() * 30) + 70,
-                grit: getTrait('Grit') ? parseInt(getTrait('Grit'), 10) : Math.floor(Math.random() * 30) + 70,
-                handling: getTrait('Handling') ? parseInt(getTrait('Handling'), 10) : Math.floor(Math.random() * 30) + 70,
+                speed: getTrait('Speed') ? parseInt(getTrait('Speed'), 10) : 70 + (parseInt(nft.identifier || '0', 10) % 25),
+                acceleration: getTrait('Acceleration') ? parseInt(getTrait('Acceleration'), 10) : 70 + ((parseInt(nft.identifier || '0', 10) * 3) % 25),
+                grit: getTrait('Grit') ? parseInt(getTrait('Grit'), 10) : 70 + ((parseInt(nft.identifier || '0', 10) * 7) % 25),
+                handling: getTrait('Handling') ? parseInt(getTrait('Handling'), 10) : 70 + ((parseInt(nft.identifier || '0', 10) * 11) % 25),
               },
               rarity: getTrait('Rarity') || 'Rare',
               archetype: getTrait('Archetype') || 'Unknown',
@@ -308,7 +308,7 @@ export default function MeetTheRacers() {
 
               <div className="flex items-center justify-between mb-4">
                 <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-mono font-bold text-white tracking-widest">
-                  SERIAL {activeRacer.serial}
+                  LASTLAP {activeRacer.serial}
                 </span>
                 <span className="text-[10px] font-mono text-white/40 uppercase">
                   ACTIVE DOSSIER
@@ -319,7 +319,7 @@ export default function MeetTheRacers() {
                 className="text-3xl sm:text-4xl font-black uppercase text-white tracking-wide"
                 style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
               >
-                SERIAL {activeRacer.serial}
+                LASTLAP {activeRacer.serial}
               </h3>
 
               {/* Stats Matrix */}
@@ -502,7 +502,7 @@ export default function MeetTheRacers() {
                               className="text-lg sm:text-xl font-black uppercase text-white tracking-wide"
                               style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                             >
-                              SERIAL {racer.serial}
+                              LASTLAP {racer.serial}
                             </h4>
                           </div>
                           <div className="text-right">
@@ -550,7 +550,7 @@ export default function MeetTheRacers() {
                     className="text-2xl sm:text-3xl font-black uppercase tracking-wide leading-none"
                     style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.05em' }}
                   >
-                    SERIAL {selectedRacer.serial}
+                    LASTLAP {selectedRacer.serial}
                   </h3>
                 </div>
               </div>
