@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { RACERS } from '../data/mockData';
 import { Racer } from '../types';
 import { X, Eye, ChevronLeft, ChevronRight, RotateCw, Gauge, Zap, Shield, Compass, Hand, Sparkles } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -90,13 +91,20 @@ export default function MeetTheRacers() {
         if (!response.ok) throw new Error('Failed to fetch NFTs');
         const data = await response.json();
         if (data && data.nfts && data.nfts.length > 0 && mounted) {
+          const fallbackImages = [
+            'https://cdn.lastlap.live/lastlap/Br4ted.png',
+            'https://cdn.lastlap.live/lastlap/H0ld.png',
+            'https://cdn.lastlap.live/lastlap/Honorary_for_Oguz.png',
+            'https://cdn.lastlap.live/lastlap/Post_for_17th_August.png',
+            'https://cdn.lastlap.live/lastlap/Web_Post.png'
+          ];
           const mappedRacers: Racer[] = data.nfts.map((nft: any, index: number) => {
             const getTrait = (type: string) => nft.traits?.find((t: any) => t.trait_type === type)?.value;
             return {
               id: nft.identifier,
               name: nft.name || `Racer #${nft.identifier}`,
               serial: String(nft.identifier).padStart(4, '0'),
-              image: nft.image_url || nft.display_image_url || '',
+              image: nft.image_url || nft.display_image_url || fallbackImages[index % fallbackImages.length],
               bgImage: '',
               color: ['#3b82f6', '#f59e0b', '#ec4899', '#10b981', '#8b5cf6'][index % 5],
               panelColor: 'bg-zinc-950',
@@ -117,6 +125,9 @@ export default function MeetTheRacers() {
         }
       } catch (err) {
         console.warn('Could not fetch from OpenSea:', err);
+        if (mounted) {
+          setRacersList(RACERS);
+        }
       } finally {
         if (mounted) setIsLoadingRacers(false);
       }
