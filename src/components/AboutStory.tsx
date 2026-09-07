@@ -208,7 +208,7 @@ export default function AboutStory() {
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>LastLap NFTs — Coming Soon on Robinhood</span>
+                  <span>Phase 2 In Progress — LastLap Token Coming Soon</span>
                 </div>
                 <a
                   href="https://opensea.io/collection/lastlaprh"

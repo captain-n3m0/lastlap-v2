@@ -404,10 +404,10 @@ export const TOKEN_UTILITIES = [
 export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
     phase: 'PHASE 01',
-    badge: 'IN PROGRESS',
+    badge: 'COMPLETED',
     title: 'Genesis Mint & Grid Inception',
     description: '2,525 Hand-drawn desert racers deployed onchain with provable metadata and smart contract audit.',
-    status: 'Active',
+    status: 'Completed',
     details: [
       'Genesis deployment of 2,525 unique NFT racers',
       'Smart contract verification & audit completion',
@@ -417,10 +417,10 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   },
   {
     phase: 'PHASE 02',
-    badge: 'QUEUED',
-    title: '$LAP Token Coming on Robinhood Network',
-    description: '$LAP Token launch on Robinhood Network with ecosystem staking, holder incentives, and network deployment.',
-    status: 'Upcoming',
+    badge: 'IN PROGRESS',
+    title: 'LastLap Token Coming Soon',
+    description: 'The LastLap Token is coming soon to Robinhood Network with ecosystem staking, holder incentives, and network deployment.',
+    status: 'Active',
     details: [
       'Holder rewards',
       'Community Rewards',
