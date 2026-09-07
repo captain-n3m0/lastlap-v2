@@ -17,7 +17,7 @@ export function RacerCardVisual({ racer }: RacerCardVisualProps) {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/50 border border-white/10 transform-gpu [will-change:transform]">
+    <div className="relative my-auto w-full h-[180px] sm:h-[240px] flex items-center justify-center overflow-hidden rounded-xl bg-black/50 border border-white/10">
       {/* Background Graphic with Load Transition */}
       {racer.bgImage && !imageError && (
         <img
@@ -86,8 +86,8 @@ export function RacerCardVisual({ racer }: RacerCardVisualProps) {
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
           onError={() => setImageError(true)}
-          className={`card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-all duration-500 transform-gpu [will-change:transform] ${
-            imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          className={`card-main-image relative z-10 max-h-[90%] max-w-[90%] object-contain transition-opacity duration-300 transform-gpu ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
       ) : (

@@ -44,13 +44,18 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...res
     data-cursor="card"
     data-cursor-label="DRAG / INSPECT"
     {...rest}
-    className={`racer-card absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl [transform-style:preserve-3d] [will-change:transform] transform-gpu [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing transition-shadow duration-300 ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
+    className={`racer-card absolute top-1/2 left-1/2 rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl transform-gpu [backface-visibility:hidden] select-none touch-none cursor-grab active:cursor-grabbing ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
   />
 ));
 
 Card.displayName = 'Card';
 
 type CardRef = RefObject<HTMLDivElement | null>;
+
+// Five cards are painted and one more is preloaded just outside the stack. The
+// full order is retained without keeping dozens of image-heavy layers alive.
+const PAINTED_CARD_COUNT = 5;
+const RENDERED_CARD_COUNT = PAINTED_CARD_COUNT + 1;
 
 interface Slot {
   x: number;
@@ -124,7 +129,9 @@ const placeNow = (el: HTMLElement, slot: Slot) =>
     yPercent: -50,
     skewY: slot.skewY ?? 0,
     scale: slot.scale ?? 1,
-    opacity: slot.opacity ?? 1,
+    autoAlpha: slot.opacity ?? 1,
+    pointerEvents: (slot.opacity ?? 1) > 0 ? 'auto' : 'none',
+    willChange: (slot.opacity ?? 1) > 0 ? 'transform' : 'auto',
     transformOrigin: 'center center',
     zIndex: slot.zIndex,
     force3D: true
@@ -183,7 +190,14 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
   // Active hover indicator slot state for rendering docking guide
   const [dockingSlotIndex, setDockingSlotIndex] = useState<number | null>(null);
+  const [renderedCardIndexes, setRenderedCardIndexes] = useState<Set<number>>(new Set());
   const isVisibleRef = useRef<boolean>(true);
+
+  const renderCardWindow = useCallback((nextOrder: number[], extraIndex?: number) => {
+    const nextVisible = new Set(nextOrder.slice(0, RENDERED_CARD_COUNT));
+    if (extraIndex !== undefined) nextVisible.add(extraIndex);
+    setRenderedCardIndexes(nextVisible);
+  }, []);
 
   // Fast GPU-accelerated trail response without costly CPU blur filter recalculation
   const triggerImageTrail = (
@@ -223,7 +237,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       });
     }
 
-    if (mainImg && (trailX !== 0 || trailY !== 0)) {
+    if (mainImg) {
       gsap.to(mainImg, {
         x: -trailX * 0.2,
         y: -trailY * 0.2,
@@ -246,11 +260,12 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   // Animate all cards to their current ordered standard slots
   const renderOrder = useCallback((animate = true, duration = 0.6) => {
     const total = order.current.length;
+    renderCardWindow(order.current);
     order.current.forEach((cardIndex, slotIndex) => {
       const el = refs[cardIndex]?.current;
       if (!el) return;
       const slot = makeSlot(slotIndex, cardDistance, verticalDistance, total, skewAmount);
-      if (animate) {
+      if (animate && slotIndex < RENDERED_CARD_COUNT) {
         gsap.to(el, {
           x: slot.x,
           y: slot.y,
@@ -259,7 +274,9 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           yPercent: -50,
           skewY: slot.skewY,
           scale: slot.scale ?? 1,
-          opacity: slot.opacity ?? 1,
+          autoAlpha: slot.opacity ?? 1,
+          pointerEvents: (slot.opacity ?? 1) > 0 ? 'auto' : 'none',
+          willChange: 'transform',
           zIndex: slot.zIndex,
           rotationZ: 0,
           duration,
@@ -270,19 +287,20 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         placeNow(el, slot);
       }
 
-      // Reset trailing effects
-      triggerImageTrail(el, {
-        trailX: 0,
-        trailY: 0,
-        trailOpacity: 0,
-        duration: 0.4
-      });
+      if (slotIndex < PAINTED_CARD_COUNT) {
+        triggerImageTrail(el, {
+          trailX: 0,
+          trailY: 0,
+          trailOpacity: 0,
+          duration: 0.25
+        });
+      }
     });
 
     if (order.current[0] !== undefined) {
       onActiveChangeRef.current?.(order.current[0]);
     }
-  }, [cardDistance, verticalDistance, skewAmount, refs]);
+  }, [cardDistance, verticalDistance, skewAmount, refs, renderCardWindow]);
 
   // Advance to next card (front card drops and moves to back)
   const triggerSwap = useCallback((direction: 'next' | 'prev' = 'next') => {
@@ -296,6 +314,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
       isSwapping.current = true;
       const total = refs.length;
+      renderCardWindow([lastIndex, ...order.current.slice(0, -1)], lastIndex);
       const tl = gsap.timeline({
         onComplete: () => {
           isSwapping.current = false;
@@ -314,7 +333,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       });
 
       // Bring last card up and to front
-      tl.set(elLast, { zIndex: total + 10 });
+      tl.set(elLast, { zIndex: total + 10, autoAlpha: 1, pointerEvents: 'auto', willChange: 'transform' });
       tl.to(elLast, {
         x: -80,
         y: '+=120',
@@ -327,7 +346,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
       // Shift other cards back with subtle trailing response
       const remaining = order.current.slice(0, -1);
-      remaining.forEach((idx, i) => {
+      remaining.slice(0, RENDERED_CARD_COUNT).forEach((idx, i) => {
         const el = refs[idx]?.current;
         if (!el) return;
         const slot = makeSlot(i + 1, cardDistance, verticalDistance, total, skewAmount);
@@ -347,7 +366,8 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
             z: slot.z,
             skewY: slot.skewY,
             scale: slot.scale ?? 1,
-            opacity: slot.opacity ?? 1,
+            autoAlpha: slot.opacity ?? 1,
+            pointerEvents: (slot.opacity ?? 1) > 0 ? 'auto' : 'none',
             zIndex: slot.zIndex,
             duration: 0.4,
             ease: 'power2.out',
@@ -379,6 +399,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
       tl.call(() => {
         order.current = [lastIndex, ...remaining];
+        renderCardWindow(order.current);
         if (order.current[0] !== undefined) {
           onActiveChangeRef.current?.(order.current[0]);
         }
@@ -393,6 +414,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     if (!elFront) return;
 
     isSwapping.current = true;
+    renderCardWindow(rest, front);
     const tl = gsap.timeline({
       onComplete: () => {
         isSwapping.current = false;
@@ -417,7 +439,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     });
 
     tl.addLabel('promote', `-=${config.durDrop * config.promoteOverlap}`);
-    rest.forEach((idx, i) => {
+    rest.slice(0, RENDERED_CARD_COUNT).forEach((idx, i) => {
       const el = refs[idx]?.current;
       if (!el) return;
       const slot = makeSlot(i, cardDistance, verticalDistance, refs.length, skewAmount);
@@ -439,49 +461,31 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           z: slot.z,
           skewY: slot.skewY,
           scale: slot.scale ?? 1,
-          opacity: slot.opacity ?? 1,
+          autoAlpha: slot.opacity ?? 1,
+          pointerEvents: (slot.opacity ?? 1) > 0 ? 'auto' : 'none',
+          willChange: 'transform',
           duration: config.durMove,
           ease: config.ease,
           onComplete: () => {
             triggerImageTrail(el, { trailX: 0, trailY: 0, trailOpacity: 0, duration: 0.4 });
           }
         },
-        `promote+=${i * 0.1}`
+        'promote'
       );
     });
 
     const backSlot = makeSlot(refs.length - 1, cardDistance, verticalDistance, refs.length, skewAmount);
     tl.addLabel('return', `promote+=${config.durMove * config.returnDelay}`);
-    tl.call(
-      () => {
-        gsap.set(elFront, { zIndex: backSlot.zIndex });
-      },
-      undefined,
-      'return'
-    );
-
-    tl.to(
-      elFront,
-      {
-        x: backSlot.x,
-        y: backSlot.y,
-        z: backSlot.z,
-        skewY: backSlot.skewY,
-        scale: backSlot.scale ?? 1,
-        opacity: backSlot.opacity ?? 1,
-        duration: config.durReturn,
-        ease: config.ease
-      },
-      'return'
-    );
+    tl.call(() => placeNow(elFront, backSlot), undefined, 'return');
 
     tl.call(() => {
       order.current = [...rest, front];
+      renderCardWindow(order.current);
       if (order.current[0] !== undefined) {
         onActiveChangeRef.current?.(order.current[0]);
       }
     });
-  }, [cardDistance, verticalDistance, skewAmount, config, refs]);
+  }, [cardDistance, verticalDistance, skewAmount, config, refs, renderCardWindow]);
 
   const triggerSwapPrev = useCallback(() => {
     triggerSwap('prev');
@@ -491,9 +495,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
     tlRef.current?.kill();
     isSwapping.current = false;
     order.current = Array.from({ length: refs.length }, (_, i) => i);
+    renderCardWindow(order.current);
     setDockingSlotIndex(null);
     renderOrder(true, 0.8);
-  }, [refs.length, renderOrder]);
+  }, [refs.length, renderOrder, renderCardWindow]);
 
   useImperativeHandle(forwardedRef, () => ({
     swap: () => triggerSwap('next'),
@@ -512,6 +517,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   // Initialize, place cards, and attach viewport observer
   useEffect(() => {
     order.current = Array.from({ length: refs.length }, (_, i) => i);
+    renderCardWindow(order.current);
     onActiveChangeRef.current?.(0);
 
     const total = refs.length;
@@ -571,7 +577,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       if (intervalRef.current) clearInterval(intervalRef.current);
       tlRef.current?.kill();
     };
-  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs, triggerSwap, restartTimer]);
+  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs, triggerSwap, restartTimer, renderCardWindow]);
 
   // Handle Drag & Touch Swipe Gestures with real-time trailing motion feedback
   const handlePointerDown = (cardIndex: number, e: React.PointerEvent<HTMLDivElement>) => {
@@ -610,7 +616,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
     const animateSplit = (targetSlot: number) => {
       const remainingOrder = order.current.filter((idx) => idx !== cardIndex);
-      remainingOrder.forEach((idx, sIndex) => {
+      remainingOrder.slice(0, PAINTED_CARD_COUNT).forEach((idx, sIndex) => {
         const otherEl = refs[idx]?.current;
         if (!otherEl) return;
         const magSlot = makeMagneticSlot(sIndex, cardDistance, verticalDistance, total, targetSlot, skewAmount);
@@ -655,23 +661,13 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
         force3D: true
       });
 
-      // Real-time trailing motion response based on drag vector
-      const trailLagX = -deltaX * 0.14;
-      const trailLagY = -deltaY * 0.14;
-      const trailAlpha = Math.min(0.65, dist / 120);
-
-      triggerImageTrail(el, {
-        trailX: trailLagX,
-        trailY: trailLagY,
-        trailScale: 1.03,
-        trailOpacity: trailAlpha,
-        duration: 0.15
-      });
+      const speedLines = el.querySelector<HTMLElement>('.card-speed-streak');
+      if (speedLines) gsap.set(speedLines, { opacity: Math.min(0.45, dist / 180) });
 
       // Calculate nearest slot
       let bestSlot = 0;
       let minDistance = Infinity;
-      for (let s = 0; s < total; s++) {
+      for (let s = 0; s < Math.min(total, PAINTED_CARD_COUNT); s++) {
         const slotPos = makeSlot(s, cardDistance, verticalDistance, total, skewAmount);
         const d = Math.hypot(currentX - slotPos.x, currentY - slotPos.y);
         if (d < minDistance) {
@@ -751,6 +747,8 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
           key: child.key ?? i,
           ref: refs[i],
           style: { width, height, ...(child.props.style ?? {}) },
+          children: renderedCardIndexes.has(i) ? child.props.children : null,
+          'aria-hidden': !renderedCardIndexes.has(i),
           onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => {
             child.props.onPointerDown?.(e);
             handlePointerDown(i, e);
@@ -769,7 +767,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
       }}
     >
       {/* 3D Container */}
-      <div className="absolute inset-0 [transform-style:preserve-3d] transform-gpu [will-change:transform]">
+      <div className="absolute inset-0 [transform-style:preserve-3d]">
         {rendered}
 
         {/* Docking Indicator Guide when dragging */}

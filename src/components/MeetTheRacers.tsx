@@ -285,7 +285,7 @@ export default function MeetTheRacers() {
         </div>
 
         {/* Showcase Grid: Left Dossier Stats + Center CardSwap Deck */}
-        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center transform-gpu [will-change:transform]">
+        <div ref={showcaseRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {!activeRacer ? (
             <div className="lg:col-span-12 py-32 flex flex-col items-center justify-center space-y-4 text-center">
                <div className="w-12 h-12 rounded-xl bg-black/60 border border-white/20 flex items-center justify-center mb-2">
@@ -299,7 +299,7 @@ export default function MeetTheRacers() {
             <>
               {/* Left Column: Active Racer Telemetry HUD */}
               <div className="lg:col-span-5 flex flex-col justify-between space-y-6 order-2 lg:order-1">
-                <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-white/10 backdrop-blur-xl relative overflow-hidden transform-gpu [will-change:transform]">
+                <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-white/10 relative overflow-hidden">
                   {/* Top Accent bar */}
                   <div
                     className="absolute top-0 left-0 right-0 h-1.5 transition-colors duration-500"
@@ -447,7 +447,7 @@ export default function MeetTheRacers() {
             </div>
 
             <div
-              className="relative flex items-center justify-center transform-gpu [will-change:transform]"
+              className="relative flex items-center justify-center"
               style={{
                 width: cardDimensions.width + 50,
                 height: cardDimensions.height + 40
@@ -472,10 +472,10 @@ export default function MeetTheRacers() {
                 {racersList.map((racer) => (
                   <Card
                     key={racer.id}
-                    customClass="cursor-pointer group overflow-hidden border border-white/15 hover:border-white/50 transition-colors duration-300 transform-gpu [will-change:transform]"
+                    customClass="cursor-pointer group overflow-hidden border border-white/15 hover:border-white/50 transition-colors duration-200"
                     style={{
                       background: `linear-gradient(170deg, #18181b 0%, #09090b 100%)`,
-                      boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 30px -5px ${racer.color}20`,
+                      boxShadow: '0 20px 45px -18px rgba(0, 0, 0, 0.9)',
                     }}
                   >
                     <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-6 transform-gpu">
