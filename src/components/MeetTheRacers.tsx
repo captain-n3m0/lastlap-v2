@@ -409,32 +409,32 @@ export default function MeetTheRacers() {
               </div>
             </div>
 
-            {/* Active Card Indicator Strip */}
-            <div className="flex items-center justify-between px-3 text-xs font-mono text-white/50">
-              <div className="flex items-center gap-2">
+            {/* Compact roster progress — avoids a 50-dot row overflowing into the deck */}
+            <div className="flex items-center gap-4 px-3 text-xs font-mono text-white/50 min-w-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <span>PILOT:</span>
-                <span className="text-white font-bold">
+                <span className="text-white font-bold tabular-nums">
                   {String(activeCardIndex + 1).padStart(2, '0')} / {String(racersList.length).padStart(2, '0')}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                {racersList.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      const diff = (i - activeCardIndex + racersList.length) % racersList.length;
-                      for (let step = 0; step < diff; step++) {
-                        setTimeout(() => cardSwapRef.current?.swap(), step * 180);
-                      }
-                    }}
-                    aria-label={`Jump to racer ${i + 1}`}
-                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                      activeCardIndex === i ? 'w-6 bg-white' : 'w-2 bg-white/20 hover:bg-white/40'
-                    }`}
-                  />
-                ))}
+
+              <div
+                className="relative h-1.5 flex-1 min-w-0 overflow-hidden rounded-full bg-white/10"
+                role="progressbar"
+                aria-label="Racer roster position"
+                aria-valuemin={1}
+                aria-valuemax={racersList.length}
+                aria-valuenow={activeCardIndex + 1}
+              >
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-white transition-[width] duration-300 ease-out"
+                  style={{ width: `${((activeCardIndex + 1) / racersList.length) * 100}%` }}
+                />
               </div>
+
+              <span className="shrink-0 text-[10px] tabular-nums text-white/40">
+                {Math.round(((activeCardIndex + 1) / racersList.length) * 100)}%
+              </span>
             </div>
           </div>
 
